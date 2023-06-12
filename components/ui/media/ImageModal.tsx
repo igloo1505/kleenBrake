@@ -10,7 +10,6 @@ interface ImageModalProps {
 }
 
 const ImageModal = ({ url }: ImageModalProps) => {
-    console.log("Url in here!: ", url)
     const router = useRouter()
 
     const onDismiss = useCallback(() => {
@@ -28,7 +27,9 @@ const ImageModal = ({ url }: ImageModalProps) => {
         document.addEventListener("keydown", onKeyDown);
         return () => document.removeEventListener("keydown", onKeyDown);
     }, [onKeyDown]);
+
     console.log("url: ", url)
+
     return (
         <MediaModalWrapper>
             <div className={''}>
