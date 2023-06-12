@@ -12,7 +12,7 @@ const HeroCardRight = (props: HeroCardRightProps) => {
         <Image
             src={heroImage}
             alt="Panty Platform Image"
-            className={'max-h-[400px] w-auto'}
+            className={'max-h-[400px] w-auto rounded-lg'}
         />
     )
 }
