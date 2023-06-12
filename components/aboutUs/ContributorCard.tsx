@@ -1,4 +1,5 @@
 import type { ContributorType } from '#/types/UITypes';
+import Button from '@/io/Button';
 import Image from 'next/image';
 import React from 'react'
 
@@ -9,7 +10,9 @@ const ContributorCard = ({
     member: ContributorType
 }) => {
     return (
-        <div className={'w-full px-8 py-6 rounded bg-[--surface-ground] grid grid-cols-[25%_75%] max-w-contenetCol'}>
+        <div className={'w-full px-4 py-6 rounded bg-[--surface-card] grid grid-cols-[25%_75%] max-w-contenetCol shadow-md hover:shadow-sm transition duration-300'} style={{
+            border: "1px solid var(--surface-border)"
+        }}>
             {member.imagePath &&
                 (
                     <Image src={member.imagePath} width={1080} height={1080} alt="Team Member Image" className={'inline-block w-full rounded'}

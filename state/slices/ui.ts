@@ -12,11 +12,9 @@ const slice = createSlice({
     initialState: initialState.UI as typeof initialState['UI'],
     reducers: {
         toggleDarkMode(state) {
-            console.log("In toggleDarkMode Uno")
             state.darkMode = !state.darkMode
             if (typeof window === "undefined") return;
             if (state.lightId && state.darkId) {
-                console.log("In toggleDarkMode")
                 let lightEm = document.getElementById(state.lightId) as HTMLLinkElement
                 let darkEm = document.getElementById(state.darkId) as HTMLLinkElement
                 lightEm.media = state.darkMode ? "" : "none"

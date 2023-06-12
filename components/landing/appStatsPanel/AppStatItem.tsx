@@ -1,7 +1,6 @@
 import React from 'react'
 import { AppStatItemType } from '../../../types/UITypes';
 import { FaUsers, FaDollarSign, FaImages, FaCommentDots } from 'react-icons/fa'
-import { IconBaseProps } from 'react-icons/lib';
 import { numberToDisplayString } from '../../../utils/formatting';
 import { formatDollars } from '../../../utils/formatting';
 

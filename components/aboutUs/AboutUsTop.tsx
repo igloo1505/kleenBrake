@@ -3,6 +3,7 @@ import { AppDataType } from '#/state/initial/appData'
 import { initialUiStateType } from '#/state/initial/uiState'
 import store, { RootState } from '#/state/store'
 import { ContributorType } from '#/types/UITypes'
+import Button from '@/io/Button'
 import React from 'react'
 
 
@@ -34,8 +35,8 @@ const AboutUsTopSection = (props: AboutUsTopSectionProps) => {
                     )
                 })
             }</div>
-            <div className='text-xl md:text-2xl my-4 text-[--highlight-text-color] font-semibold'>
-                {us.bulletListTitle}
+            <div className='my-4'>
+                <Button label={us.bulletListTitle} severity='secondary' text className={'btn-override-subtitle text-xl md:text-2xl font-semibold'} />
             </div>
             <ul className={'w-full flex flex-col justify-start items-start gap-2'}>
                 {us.bulletPoints.map((b, i) => {
