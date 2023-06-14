@@ -1002,5 +1002,10 @@ module.exports = {
         // require('@tailwindcss/forms'),
         require('@tailwindcss/container-queries'),
     ],
+    safelist: [
+        {
+            pattern: /p[x|y]-\d/gm
+        }
+    ]
 }
 

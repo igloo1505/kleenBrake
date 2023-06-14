@@ -62,7 +62,9 @@ export interface AppDataType {
         description: string[]
         bulletListTitle: string
         bulletPoints: string[]
-        contributors: ContributorType[]
+        contributors: ContributorType[],
+        missionStatement: string,
+        missionStatementSlogan: string
     }
 }
 
@@ -381,7 +383,9 @@ const appData: AppDataType = {
                 title: "Montes porta in tortor.",
                 body: "Elementum eu eleifend eu ac. Lectus in eros nunc, et dui. Id nec lectus neque libero luctus porttitor vitae, id pulvinar et. Dapibus sit ante cursus lacus in sagittis sem condimentum etiam et eget congue dictumst nullam sapien dui suspendisse tincidunt amet vel pellentesque aliquam diam ac a nulla elit."
             },
-        ]
+        ],
+        missionStatement: "Ultricies tempor suscipit nullam, amet velit dolor porttitor et etiam magna dolor convallis congue, in a vulputate et consequat. Enim ut faucibus, id dolor felis imperdiet donec turpis iaculis venenatis, ac faucibus felis varius a magna nisl at aliquet sed nec porta,. Sit donec mus tempor, dignissim in nisl, erat.",
+        missionStatementSlogan: "Lacus quam ultricies nascetur imperdiet, porttitor finibus nisl,."
     }
 
 }

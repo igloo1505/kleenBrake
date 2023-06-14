@@ -11,11 +11,11 @@ export interface AppStatItemType {
 
 
 export interface ToastConfigType {
-    severity: "success" | "info" | "warn" | "error"
+    severity?: "success" | "info" | "warn" | "error"
     content: string
-    timeout: number | null
-    isOpen: boolean
-    title: string
+    timeout?: number | null
+    isOpen?: boolean
+    title?: string
 }
 
 

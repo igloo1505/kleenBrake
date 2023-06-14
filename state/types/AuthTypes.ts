@@ -11,6 +11,8 @@ export interface NewUserData {
     password: string
     email: string
     age: string | number
+    confirmAge: boolean
+    agreeToTerms: boolean
 }
 
 // export interface ModelOffersTypes {

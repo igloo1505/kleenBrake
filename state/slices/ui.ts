@@ -36,7 +36,11 @@ const slice = createSlice({
             state.appData = action.payload
         },
         showToast(state, action: PayloadAction<ToastConfigType>) {
-            state.toast = action.payload
+            state.toast = {
+                ...action.payload,
+                ...(typeof action.payload?.isOpen === "undefined" && { isOpen: true }),
+                ...(typeof action.payload?.severity === "undefined" && { severity: "info" }),
+            }
         },
         toggleDrawer(state, action: PayloadAction<boolean | undefined>) {
             console.log("Toggling drawer: ", action.payload)

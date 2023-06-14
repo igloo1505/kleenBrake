@@ -13,13 +13,16 @@ interface RequestContext {
 const router = createEdgeRouter<NextRequest, RequestContext>();
 
 
-
 router
     .post(async (req, ctx) => {
         try {
             const json = await req.json()
+            console.log("json: ", json)
             const user: NewUserData = json.user
             const hashedPassword = await encryptPassword(user.password)
+            if (!user.agreeToTerms || !user.confirmAge) {
+                return NextResponse.json({ success: false, publicError: "You must agree to the terms of service and confirm your age to register." })
+            }
             const newUser = await prisma.user.create({
                 data: {
                     username: user.username,
