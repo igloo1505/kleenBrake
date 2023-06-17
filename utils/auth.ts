@@ -4,9 +4,9 @@ import * as jose from 'jose'
 
 
 
-const issuer = 'pPlatform:issuer'
-const audience = 'pPlatform:audience'
-const alg = 'HS256'
+export const issuer = 'pPlatform:issuer'
+export const audience = 'pPlatform:audience'
+export const alg = 'HS256'
 const authTokenPath = 'auth'
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
 
@@ -66,6 +66,7 @@ export const isAuthenticated = async (req: NextRequest) => {
     }
     return validToken
 }
+
 
 export const setToken = async (req: NextRequest, res: NextResponse, userId?: string, rememberMe: boolean = false): Promise<NextResponse> => {
     let id = req.cookies.get('userId')?.value || userId

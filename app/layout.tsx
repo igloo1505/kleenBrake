@@ -13,7 +13,7 @@ import WrappedAuthObserver from '@/wrappedComponents/wrappedAuthObserver';
 
 const Layout = async ({ children, media }: {
     children: React.ReactNode,
-    media: any
+    media: any,
 }) => {
     const isAuthed = await checkAuthenticated()
     return (

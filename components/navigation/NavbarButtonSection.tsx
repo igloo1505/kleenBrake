@@ -20,7 +20,7 @@ export const unAuthenticatedButtons: NavbarButtonType[] = [
     {
         text: "Enroll Now",
         href: "/signup",
-        authed: "both"
+        authed: false
     },
     {
         text: "Login",
@@ -28,8 +28,14 @@ export const unAuthenticatedButtons: NavbarButtonType[] = [
         authed: false
     },
     {
+        text: "Show QR",
+        href: "/showTransactionCode",
+        authed: true,
+        role: "ADMIN"
+    },
+    {
         text: "Dashboard",
-        href: (id: string) => `/dashboard/${id}`,
+        href: (id: string | number) => `/dashboard/${id}`,
         authed: true
     },
 ]
