@@ -11,10 +11,11 @@ interface RecentSalesProps {
 
 const RecentSales = ({ data }: RecentSalesProps) => {
     return (
-        <div className={'dashboardCard flex flex-col justify-center items-center'} style={{
+        <div className={'dashboardCard grid grid-rows-[2rem_1fr]'} style={{
             minHeight: "min(30vh, 300px)"
         }}>
-            <div>
+            <div className={'dashboardCard-title'}>Recent Sales</div>
+            <div className={'w-full h-full flex justify-center items-center'}>
                 Recent Sales Table will go here
             </div>
         </div>

@@ -11,8 +11,9 @@ interface SalesByDepthProps {
 
 const SalesByDepth = (props: SalesByDepthProps) => {
     return (
-        <div className={'dashboardCard w-full h-full flex flex-col justify-center items-center '}>
-            <div>Will be a pie chart representing the proportions of sales by the depth of the person making the sale.</div>
+        <div className={'dashboardCard w-full h-full grid grid-rows-[2rem_1fr]'}>
+            <div className={'dashboardCard-title'}>Sales By Depth</div>
+            <div className={'w-full h-full flex justify-center items-center text-center'}>Will be a pie chart representing the proportions of sales by the depth of the person making the sale.</div>
         </div>
     )
 }

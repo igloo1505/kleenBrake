@@ -11,8 +11,9 @@ interface TopSellersProps {
 
 const TopSellers = ({ data }: TopSellersProps) => {
     return (
-        <div className={'dashboardCard flex flex-col justify-center items-center'}>
-            <div>
+        <div className={'dashboardCard grid grid-rows-[2rem_1fr]'}>
+            <div className={'dashboardCard-title'}>Top Sellers</div>
+            <div className={'w-full h-full flex justify-center items-center'}>
                 Top Sellers List will go here...
             </div>
         </div>
