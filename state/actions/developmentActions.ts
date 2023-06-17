@@ -47,9 +47,7 @@ export const handleAppDataChange = (value: AppDataType) => {
 
 
 export const resetAppData = () => {
-    store.dispatch(
-        handleAppDataChange(appData as AppDataType)
-    )
+    handleAppDataChange(appData as AppDataType)
 }
 
 

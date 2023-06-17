@@ -13,8 +13,8 @@ const ProductionThemeSourcing = (props: ProductionThemeSourcingProps) => {
     }
     return (
         <head>
-            <link rel="stylesheet" href={`${themeRootPath}/soho-dark/theme.css`} media={uiState.darkMode ? "" : "none"} id={uiState.lightId} />
-            <link rel="stylesheet" href={`${themeRootPath}/soho-light/theme.css`} media={!uiState.darkMode ? "" : "none"} id={uiState.darkId} />
+            <link rel="stylesheet" href={`${themeRootPath}/soho-dark/theme.css`} media={uiState.darkMode ? "" : "none"} id={uiState.lightId || "light-theme-id"} />
+            <link rel="stylesheet" href={`${themeRootPath}/soho-light/theme.css`} media={!uiState.darkMode ? "" : "none"} id={uiState.darkId || "dark-theme-id"} />
         </head>
     )
 }
