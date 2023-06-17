@@ -14,7 +14,7 @@ const connector = connect((state: RootState, props: any) => ({
 
 export interface NavbarButtonType {
     text: string,
-    href: string | ((id: string) => string)
+    href: string | ((id: string | number) => string)
     authed: boolean | "both"
     role?: roleTypes | undefined
 }
@@ -25,14 +25,13 @@ export const shouldDisplay = (button: NavbarButtonType, authenticated: boolean, 
 
 
 const NavbarButton = connector(({ button, auth: { authenticated, user } }: { button: NavbarButtonType, auth: InitialAuthStateType }) => {
-    console.log("authenticated: ", authenticated)
     const [display, setDisplay] = useState(false)
     useEffect(() => setDisplay(shouldDisplay(button, authenticated, user)), [authenticated, user])
     if (!display) {
         return null
     }
     return (
-        <Link href={typeof button.href === "string" ? button.href : button.href(user?.username || "")}>{button.text}</Link>
+        <Link href={typeof button.href === "string" ? button.href : button.href(user?.id || "")}>{button.text}</Link>
     )
 
 })

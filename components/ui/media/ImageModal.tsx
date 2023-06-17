@@ -28,7 +28,6 @@ const ImageModal = ({ url }: ImageModalProps) => {
         return () => document.removeEventListener("keydown", onKeyDown);
     }, [onKeyDown]);
 
-    console.log("url: ", url)
 
     return (
         <MediaModalWrapper>

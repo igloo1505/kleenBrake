@@ -15,6 +15,10 @@ const slice = createSlice({
             state.user = action.payload
             state.authenticated = true
         },
+        authError(state, action: PayloadAction<string | undefined>) {
+            state.authenticated = false
+            state.user = initialState.auth.user
+        },
         logout(state) {
             // state.authenticated = initialState.auth.authenticated
             // state.user = initialState.auth.user

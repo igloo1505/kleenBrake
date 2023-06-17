@@ -1,3 +1,4 @@
+import { Transaction, User } from '@prisma/client'
 import { IconType } from "react-icons/lib"
 
 type SeverityType = "secondary" | "success" | "info" | "warning" | "help" | "danger"
@@ -52,3 +53,8 @@ export interface ContributorType {
 
 
 
+export interface TransactionUserBound extends Transaction {
+    user: User
+}
+
+export type DashboardComponent = "commission" | "descendants" | "salesHistory"

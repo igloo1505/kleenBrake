@@ -21,6 +21,7 @@ export interface NewUserData {
 
 
 export interface RetrievedUserData {
+    id: string | number
     username: string
     password: string
     email: string

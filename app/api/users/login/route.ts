@@ -21,7 +21,6 @@ router
         try {
             const json = await req.json()
             const data: LoginUserData = json.user
-            console.log("json: ", json)
             const user = await prisma.user.findFirst({
                 where: {
                     OR: [
@@ -41,7 +40,7 @@ router
             // @ts-ignore
             delete returnUser.password
             let res = NextResponse.json({ user: returnUser, success: true })
-            res = await setToken(req, res, returnUser.username)
+            res = await setToken(req, res, returnUser.username, true)
             return res
         } catch {
             return NextResponse.json({ success: false });

@@ -41,7 +41,6 @@ const LoginCard = () => {
 
     const handleSubmit = async () => {
         const r = await loginUser(data)
-        console.log("r: ", r)
         if (r.success && r.user.id) {
             router.push(`/dashboard/${r.user.id}`)
         }

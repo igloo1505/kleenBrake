@@ -26,7 +26,7 @@ const makeConfiguredStore = () => configureStore({
     devTools: process.env.NODE_ENV !== "production" || true,
 });
 
-export const makeStore = () => {
+export const makeStore = (): ReturnType<typeof makeConfiguredStore> => {
     const isServer = typeof window === "undefined";
     if (isServer) {
         return makeConfiguredStore();

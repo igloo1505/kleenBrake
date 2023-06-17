@@ -3,7 +3,7 @@ import { defaultAxiosConfig } from '../types/NetworkTypes'
 import store from '../store'
 import { LoginUserData, NewUserData } from '../types/AuthTypes'
 import { loginSuccess, logout } from '../slices/auth'
-import { showToast } from '../slices/ui'
+import { publicError, showToast } from '../slices/ui'
 
 
 export const createNewUser = async (user: NewUserData) => {
@@ -12,6 +12,11 @@ export const createNewUser = async (user: NewUserData) => {
         store.dispatch(
             loginSuccess(res.data.newUser)
         )
+    }
+    if (!res.data?.success) {
+        if (res.data?.publicError) {
+            store.dispatch(publicError(res.data.publicError))
+        }
     }
     return res.data
 }
@@ -36,7 +41,6 @@ export const loginUser = async (data: LoginUserData) => {
 }
 
 export const logoutUser = async () => {
-    console.log("logging out...")
     await axios.post("/api/users/logout", {}, defaultAxiosConfig)
     store.dispatch(
         logout()

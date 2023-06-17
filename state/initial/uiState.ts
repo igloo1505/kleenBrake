@@ -1,4 +1,4 @@
-import { ToastConfigType } from "../../types/UITypes"
+import { DashboardComponent, ToastConfigType } from "#/types/UITypes"
 import appData, { AppDataType } from "./appData"
 
 export type initialUiStateType = {
@@ -12,6 +12,9 @@ export type initialUiStateType = {
     modals: {
         termsOfService: boolean
         privacy: boolean
+    }
+    dashboard: {
+        activeComponent: DashboardComponent
     }
 }
 
@@ -40,6 +43,9 @@ const initialUiState: initialUiStateType = {
     modals: {
         termsOfService: false,
         privacy: false
+    },
+    dashboard: {
+        activeComponent: "salesHistory"
     }
 }
 

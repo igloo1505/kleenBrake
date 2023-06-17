@@ -12,7 +12,7 @@ const ParallaxMissionPhoto = () => {
     const adjustImage = (pos: ReturnType<typeof useScrollFactor>) => {
         if (!pos?.allowed) return
         const shift = ref.current.height - container.current.getBoundingClientRect().height
-        ref.current.style.transform = `translateY(-${shift * pos.scrollPortion}px)`
+        ref.current.style.transform = `translateY(-${shift * pos.scrollPortionDocument}px)`
     }
 
     adjustImage(useScrollFactor())

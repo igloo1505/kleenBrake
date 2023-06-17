@@ -17,3 +17,7 @@ export class PrismaUser {
         return bcrypt.compareSync(this.password, encrypted)
     }
 }
+
+export interface TransactionSubmission {
+    price: number
+}

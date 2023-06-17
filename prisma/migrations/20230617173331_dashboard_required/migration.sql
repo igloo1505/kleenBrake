@@ -1,14 +1,5 @@
 -- CreateEnum
-CREATE TYPE "ROLE" AS ENUM ('USER', 'SELLER', 'ADMIN', 'BANNED');
-
--- CreateTable
-CREATE TABLE "UserThree" (
-    "id" SERIAL NOT NULL,
-    "name" TEXT,
-    "teacherId" INTEGER,
-
-    CONSTRAINT "UserThree_pkey" PRIMARY KEY ("id")
-);
+CREATE TYPE "ROLE" AS ENUM ('USER', 'ADMIN', 'BANNED');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -19,6 +10,7 @@ CREATE TABLE "User" (
     "role" "ROLE" NOT NULL DEFAULT 'USER',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "parentId" INTEGER,
+    "dashboardId" INTEGER NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -27,9 +19,16 @@ CREATE TABLE "User" (
 CREATE TABLE "Transaction" (
     "id" SERIAL NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
-    "userId" INTEGER,
+    "dashboardId" INTEGER NOT NULL,
 
     CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Dashboard" (
+    "id" SERIAL NOT NULL,
+
+    CONSTRAINT "Dashboard_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -39,10 +38,10 @@ CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- AddForeignKey
-ALTER TABLE "UserThree" ADD CONSTRAINT "UserThree_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "UserThree"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "User" ADD CONSTRAINT "User_dashboardId_fkey" FOREIGN KEY ("dashboardId") REFERENCES "Dashboard"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_dashboardId_fkey" FOREIGN KEY ("dashboardId") REFERENCES "Dashboard"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

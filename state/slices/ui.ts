@@ -1,9 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import initialState from "../initial/initialState";
-import type { RetrievedUserData } from "../types/AuthTypes";
-import { InitialAuthStateType } from "../initial/authState";
 import { AppDataType } from "../initial/appData";
-import { ToastConfigType } from "../../types/UITypes";
+import { DashboardComponent, ToastConfigType } from "../../types/UITypes";
 import { ModalKeyType } from "../initial/uiState";
 import type { RootState } from "../store";
 
@@ -42,8 +40,14 @@ const slice = createSlice({
                 ...(typeof action.payload?.severity === "undefined" && { severity: "info" }),
             }
         },
+        publicError(state, action: PayloadAction<string>) {
+            state.toast = {
+                severity: "error",
+                content: action.payload,
+                isOpen: true
+            }
+        },
         toggleDrawer(state, action: PayloadAction<boolean | undefined>) {
-            console.log("Toggling drawer: ", action.payload)
             state.drawerOpen = typeof action.payload !== "undefined" ? action.payload : !state.drawerOpen
         },
         toggleModal(state, action: PayloadAction<ModalKeyType>) {
@@ -53,15 +57,18 @@ const slice = createSlice({
             }
         },
         closeAllModals(state) {
-            let newModals: RootState['UI']['modals'] = {}
+            let newModals: Partial<RootState['UI']['modals']> = {}
             Object.keys(state.modals).forEach((k) => {
                 // @ts-ignore
                 newModals[k] = false
             })
-            state.modals = newModals
+            state.modals = newModals as RootState['UI']['modals']
+        },
+        setActiveDashboardComponent(state, action: PayloadAction<DashboardComponent>) {
+            state.dashboard.activeComponent = action.payload
         }
     }
 })
 
-export const { toggleDarkMode, setActiveTheme, setUIAppData, showToast, toggleDrawer, toggleModal, closeAllModals } = slice.actions
+export const { toggleDarkMode, setActiveTheme, setUIAppData, showToast, toggleDrawer, toggleModal, closeAllModals, setActiveDashboardComponent, publicError } = slice.actions
 export default slice.reducer

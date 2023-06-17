@@ -10,18 +10,18 @@ const alg = 'HS256'
 const authTokenPath = 'auth'
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
 
-const genToken = async (userId: string) => {
+const genToken = async (userId: string, rememberMe: boolean = false) => {
     const jwt = await new jose.SignJWT({ userId: userId })
         .setProtectedHeader({ alg })
         .setIssuedAt()
         .setIssuer(issuer)
         .setAudience(audience)
-        .setExpirationTime('2h')
+        .setExpirationTime(rememberMe ? '7d' : '2h')
         .sign(secret)
     return jwt
 }
 
-const decryptToken = async (authToken: string) => {
+export const decryptToken = async (authToken: string) => {
     try {
 
         const res = await jose.jwtVerify(authToken, secret, {
@@ -67,12 +67,13 @@ export const isAuthenticated = async (req: NextRequest) => {
     return validToken
 }
 
-export const setToken = async (req: NextRequest, res: NextResponse, userId?: string): Promise<NextResponse> => {
+export const setToken = async (req: NextRequest, res: NextResponse, userId?: string, rememberMe: boolean = false): Promise<NextResponse> => {
     let id = req.cookies.get('userId')?.value || userId
     if (!id) return res;
     res.cookies.set('userId', id)
-    const token = await genToken(id)
+    const token = await genToken(id, rememberMe)
     res.cookies.set(authTokenPath, token)
+    res.cookies.set("rememberMe", rememberMe === true ? "true" : "false")
     return res
 }
 
@@ -94,9 +95,11 @@ export const clearTokens = async (res: NextResponse) => {
 
 export const refreshTokens = async (req: NextRequest, res: NextResponse) => {
     const userId = req.cookies.get("userId")?.value
+    let remember = req.cookies.get("rememberMe")?.value
+    let rememberMe = remember === "true" ? true : false
     if (userId) {
         res.cookies.set("userId", userId)
-        const token = await genToken(userId)
+        const token = await genToken(userId, rememberMe)
         res.cookies.set("auth", token)
     }
     return res

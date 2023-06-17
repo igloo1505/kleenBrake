@@ -3,7 +3,6 @@ import { useCallback, useRef, useEffect, MouseEventHandler } from "react";
 import { useRouter } from "next/navigation";
 
 const MediaModalWrapper = ({ children }: { children: React.ReactNode }) => {
-    console.log("In MediaModalWrapper")
     const overlay = useRef<HTMLDivElement>(null!);
     const wrapper = useRef<HTMLDivElement>(null!);
     const router = useRouter();

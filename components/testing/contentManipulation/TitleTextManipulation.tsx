@@ -23,7 +23,6 @@ interface TitleTextManipulationProps {
 }
 
 const getNewAppStat = (idx: number, appData: AppDataType, val: string, subKey: string) => {
-    console.log('here', idx, val, subKey)
     return {
         ...appData,
         appStats: {
@@ -85,7 +84,6 @@ const TitleTextManipulation = connector(({ changeModal: { label, value, itemInde
                     }
                 }
             })
-            console.log("new featureds", newFeatureds)
             return setNewData({
                 ...appData,
                 featureLabels: newFeatureds

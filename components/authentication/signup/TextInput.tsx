@@ -25,7 +25,6 @@ const SignupTextInput = (props: SignupTextInputProps) => {
     useEffect(() => {
         if (props.validate) {
             let valid = props.validate(props.value)
-            console.log("Inside heree...", valid)
             setIsValid(valid || props.value.length <= 3)
         }
     }, [props.value])

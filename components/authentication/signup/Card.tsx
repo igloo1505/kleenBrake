@@ -31,13 +31,13 @@ const SignUpCard = (props: SignUpCardProps) => {
     const router = useRouter()
     const [isSeller, setIsSeller] = useState(false)
     const [formData, setFormData] = useState<FormDataType>({
-            username: "",
-            password: "",
-            confirmPassword: "",
-            email: "",
-            age: 18,
-            agreeToTerms: false,
-            confirmAge: false,
+        username: "",
+        password: "",
+        confirmPassword: "",
+        email: "",
+        age: 18,
+        agreeToTerms: false,
+        confirmAge: false,
     })
 
     const handleStringChange: ChangeEventHandler = (e) => {
@@ -60,27 +60,26 @@ const SignUpCard = (props: SignUpCardProps) => {
     const handleBooleanChange = (e: CheckboxChangeEvent) => {
         let newData: FormDataType = { ...formData }
         let target = e.target as HTMLInputElement
-            newData = {
-                ...newData,
-                [target.name]: !newData[target.name as keyof FormDataType] as boolean
-            }
+        newData = {
+            ...newData,
+            [target.name]: !newData[target.name as keyof FormDataType] as boolean
+        }
         setFormData(newData)
     }
 
     const handleAge = (e: InputNumberValueChangeEvent) => {
         let newData: FormDataType = { ...formData }
         let validAge = e.value && e.value >= 18 && e.value <= 100
-            newData = {
-                ...newData,
-                age: validAge && e.value ? e.value : 18
-            }
+        newData = {
+            ...newData,
+            age: validAge && e.value ? e.value : 18
+        }
         setFormData(newData)
     }
 
     const handleSignup = async () => {
         const data = formData
         const returnData = await createNewUser(data)
-        console.log("Success", returnData.success)
         const userId = returnData.newUser.id
         if (returnData.success && userId) {
             router.push(`/dashboard/${userId}`)

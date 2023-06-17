@@ -54,7 +54,6 @@ export class ThemeType {
     private activate(type: "dark" | "light") {
         if (typeof window === "undefined") return;
         const id = type === "dark" ? this._darkId : this._lightId
-        console.log("Id", id)
         if (!id) return;
         const em = document.getElementById(id) as HTMLLinkElement
         if (!em) return
