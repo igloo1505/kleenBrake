@@ -15,7 +15,6 @@ const ImagePagePrimary = (props: ImagePagePrimaryProps) => {
                 <Image src={`/api/images/${props?.params?.imageId}`} alt="User Image" width={1080} height={1080} />
             )
             }
-
         </div>
     )
 }

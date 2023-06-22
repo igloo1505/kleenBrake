@@ -9,6 +9,7 @@ import WrappedFooter from 'components/wrappedComponents/wrappedFooter';
 import WrappedModals from 'components/wrappedComponents/wrappedModals';
 import { checkAuthenticated } from '#/utils/authWithCookiesHook';
 import WrappedAuthObserver from '@/wrappedComponents/wrappedAuthObserver';
+import { useParams } from 'next/navigation';
 
 
 const Layout = async ({ children, media }: {

@@ -1,8 +1,12 @@
+"use client"
 import { Dashboard, User } from '@prisma/client'
 import React from 'react'
 import ProfileLineItem from './SummaryLineItem'
 import Button from '@/io/Button'
 import Link from 'next/link'
+import EditProfileContent from './editProfileContent'
+import { EditProfileFormData } from './editProfileCard'
+import { days, months } from '#/utils/dateStuff'
 
 
 
@@ -12,13 +16,31 @@ interface ProfileSummaryProps {
 
 
 const ProfileSummary = ({ user }: ProfileSummaryProps) => {
+    const formData: EditProfileFormData = {
+        email: user.email,
+        payment: {
+            nameOnAccount: "",
+            cardNumber: "xxx-xxx-xxxx",
+            securityNumber: "111",
+            expiration: {
+                month: months[0].label,
+                day: days[0].label
+            },
+            agreeToTerms: false
+        }
+    }
     return (
-        <div className={'flex flex-col justify-center items-center px-6 pt-2 pb-6 bg-[--surface-card] rounded-xl'} style={{
+        <div className={'w-full px-6 py-6 mt-8 rounded-xl h-full transition-transform duration-500 flex flex-col gap-2 max-w-[80vw] md:max-w-[600px] bg-[--surface-card]'} style={{
             border: "1px solid var(--surface-border)"
         }}>
-            <ProfileLineItem label="User Name" value={user.username} />
-            <ProfileLineItem label="Email" value={user.email} />
-            <ProfileLineItem label="Subscription" value={user.dashboard?.subscription || "inactive"} />
+            <EditProfileContent
+                formData={formData}
+                handlePaymentInfoString={() => { }}
+                setFormData={() => { }}
+                handlePaymentInfoChange={() => { }}
+                handleMaskedComplete={() => { }}
+                disabled={true}
+            />
             <div className={'w-full flex flex-row justify-end items-center'}>
                 <Link href="/editProfile">
                     <Button label="Edit" />

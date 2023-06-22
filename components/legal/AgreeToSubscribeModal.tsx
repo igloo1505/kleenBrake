@@ -31,7 +31,7 @@ const AgreeToSubscribeModal = ({ open, setIsOpen, agree }: AgreeToSubscribeModal
             <div className={'absolute top-[40px] left-[50%] -translate-x-[50%] bg-[--surface-card] rounded-xl border border-[--surface-border] w-full max-w-[calc(100vw-6rem)] z-[999] px-8 py-6'}>
                 <div className={'text-lg font-semibold'}>Terms of Service</div>
                 <div className={'max-h-[calc(100vh-200px)] overflow-y-scroll my-4'}>{tos.map((t) => {
-                    return <div className={'indent-3'}>{t}</div>
+                    return <div className={'indent-3 pr-1'}>{t}</div>
                 })}</div>
                 <div className={'w-full flex flex-row justify-end items-center'}>
                     <Button label="Agree" onClick={agree} />

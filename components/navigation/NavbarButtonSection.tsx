@@ -24,13 +24,11 @@ export const unAuthenticatedButtons: NavbarButtonType[] = [
         href: "/login",
         authed: false
     },
-    /* { */
-    /*     text: "Show QR", */
-    /*     href: "/showTransactionCode", */
-    /*     authed: true, */
-    /*     role: "ADMIN" */
-    /* }, */
-
+    {
+        text: "Show QR",
+        href: "/showRefererCode",
+        authed: true,
+    },
     {
         text: "My Profile",
         href: "/profile",

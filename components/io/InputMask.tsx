@@ -17,15 +17,18 @@ interface InputMaskProps {
     slotChar?: string
     keyfilter?: KeyFilterType
     className?: string
+    disabled?: boolean
 }
 
-const InputMask = ({ id, onChange, className, keyfilter, onComplete, value, name, label, mask, slotChar }: InputMaskProps) => {
+const InputMask = ({ id, onChange, disabled, className, keyfilter, onComplete, value, name, label, mask, slotChar }: InputMaskProps) => {
     const _mask = mask || "xxx-xxx-xxxx"
     const _slot = slotChar || "x"
     let params: {
         keyfilter?: KeyFilterType
+        disabled?: boolean
     } = {}
     keyfilter && (params['keyfilter'] = keyfilter)
+    disabled && (params['disabled'] = disabled)
 
     return (
         <div className={clsx('flex flex-col gap-2', className && className)}>

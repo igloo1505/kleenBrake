@@ -2,14 +2,9 @@ import ImageModal from '@/ui/media/ImageModal'
 import React from 'react'
 
 
-
-interface TransactionQrModalProps {
-
-}
-
-const TransactionQrModal = (props: TransactionQrModalProps) => {
+const TransactionQrModal = () => {
     return (
-        <ImageModal url="/api/transactionQr/adfadfa" />
+        <ImageModal url='/api/refererQr' />
     )
 }
 

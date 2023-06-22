@@ -15,6 +15,7 @@ interface TextInputProps {
     onFocus?: FocusEventHandler
     onBlur?: FocusEventHandler
     keyfilter?: KeyFilterType
+    disabled?: boolean
 }
 
 const TextInput = (props: TextInputProps) => {
@@ -25,6 +26,7 @@ const TextInput = (props: TextInputProps) => {
         ...(props.onFocus && { onFocus: props.onFocus }),
         ...(props.onBlur && { onBlur: props.onBlur }),
         ...(props.keyfilter && { keyfilter: props.keyfilter }),
+        ...(props.disabled && { disabled: props.disabled }),
     }
     return (
         <div className={'flex flex-col gap-2'}>

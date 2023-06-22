@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { clearTokens, isAuthenticated, refreshTokens } from "./utils/auth";
+import { assignRefererToken, clearTokens, isAuthenticated, refreshTokens } from "./utils/auth";
 
 const protectedRoutes = [
     '/profile/',
@@ -11,6 +11,14 @@ const protectedRoutes = [
 
 export async function middleware(req: NextRequest) {
     const isAuthed = await isAuthenticated(req)
+    if (req.nextUrl.pathname.startsWith("/refer/")) {
+        const refererId = req.nextUrl.pathname.split("/refer/")[1]
+        if (refererId) {
+            let res = NextResponse.redirect("/signup")
+            res = await assignRefererToken(refererId, res)
+            return res
+        }
+    }
     if (!isAuthed) {
         for (var i = 0; i < protectedRoutes.length; i++) {
             if (req.nextUrl.pathname.startsWith(protectedRoutes[i])) {

@@ -33,7 +33,7 @@ export const decryptToken = async (authToken: string) => {
     }
 }
 
-const verifyToken = async (authToken: string, userId: string): Promise<boolean> => {
+export const verifyToken = async (authToken: string, userId: string): Promise<boolean> => {
     const token = await decryptToken(authToken)
     if (!token) {
         return false
@@ -102,6 +102,11 @@ export const refreshTokens = async (req: NextRequest, res: NextResponse) => {
         const token = await genToken(userId, rememberMe)
         res.cookies.set("auth", token)
     }
+    return res
+}
+
+export const assignRefererToken = async (refererId: string, res: NextResponse) => {
+    res.cookies.set("refererId", refererId)
     return res
 }
 
