@@ -1,5 +1,6 @@
 import React, { ChangeEvent, ChangeEventHandler, FocusEventHandler, useState } from 'react'
 import { InputText } from 'primereact/inputtext';
+import { KeyFilterType } from 'primereact/keyfilter';
 
 
 
@@ -13,6 +14,7 @@ interface TextInputProps {
     extraClasses?: string
     onFocus?: FocusEventHandler
     onBlur?: FocusEventHandler
+    keyfilter?: KeyFilterType
 }
 
 const TextInput = (props: TextInputProps) => {
@@ -21,7 +23,8 @@ const TextInput = (props: TextInputProps) => {
         ...(props.helperText && { 'aria-describedby': `${props.name}-text-input-helper` }),
         ...(props.extraClasses && { className: props.extraClasses }),
         ...(props.onFocus && { onFocus: props.onFocus }),
-        ...(props.onBlur && { onBlur: props.onBlur })
+        ...(props.onBlur && { onBlur: props.onBlur }),
+        ...(props.keyfilter && { keyfilter: props.keyfilter }),
     }
     return (
         <div className={'flex flex-col gap-2'}>

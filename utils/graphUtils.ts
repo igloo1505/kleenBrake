@@ -1,3 +1,5 @@
+// BUG: Handle this once retrieving real data from stripe.
+
 export interface GraphHandlerReturnType {
     numerical: number[],
     percentChange: number,
@@ -17,7 +19,7 @@ export const salesGraphHandler = (s: any): GraphHandlerReturnType => {
 
 
 export const revenueGraphHandler = (s: any): GraphHandlerReturnType => {
-    const pChange: number = -2
+    const pChange: number = 0
     return {
         numerical: [],
         percentChange: pChange,
@@ -28,7 +30,7 @@ export const revenueGraphHandler = (s: any): GraphHandlerReturnType => {
 
 
 export const descendantsGraphHandler = (s: any): GraphHandlerReturnType => {
-    const pChange: number = 2
+    const pChange: number = 0
     return {
         numerical: [],
         percentChange: pChange,

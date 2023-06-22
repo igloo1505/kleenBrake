@@ -1,8 +1,11 @@
 import bcryptjs from 'bcrypt'
 import { prisma } from '#/db/db'
-import { audience, decryptToken, issuer, alg } from './auth'
+import { audience, decryptToken, issuer, alg, validateFromCookieValues } from './auth'
 import * as jose from 'jose'
 import { NextApiRequest } from 'next'
+import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
+import { Dashboard, User } from '@prisma/client'
 
 const secret = new TextEncoder().encode(process.env.QR_SECRET!)
 
@@ -54,4 +57,46 @@ export const getQrData = async (transactionId: string, price: string | number) =
 export const acceptTransactionCode = async (transActionCode: string, userId: string | number) => {
     console.log("transActionCode, userId: ", transActionCode, userId)
 
+}
+
+
+
+export const validateOrRedirect = async (): Promise<{
+    user: (User & { dashboard: Dashboard }) | null,
+    redirectPath: false | null | string
+}> => {
+    const cookieJar = cookies()
+    const authToken = cookieJar.get("auth")?.value
+    const userId = cookieJar.get("userId")?.value
+    if (!userId || !authToken) {
+        return {
+            user: null,
+            redirectPath: "/"
+        }
+    }
+    const isAuthed = await validateFromCookieValues(userId, authToken)
+    if (!isAuthed) {
+        return {
+            user: null,
+            redirectPath: "/"
+        }
+    }
+    const user = await prisma.user.findFirst({
+        where: {
+            username: userId
+        },
+        include: {
+            dashboard: true
+        }
+    })
+    if (user) {
+        return {
+            user: user,
+            redirectPath: false
+        }
+    }
+    return {
+        user: null,
+        redirectPath: "/"
+    }
 }

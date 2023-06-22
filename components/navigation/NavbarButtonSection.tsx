@@ -1,11 +1,8 @@
 "use client"
-import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
-import Button from '../io/Button'
 import DarkModeButton from './DarkModeButton'
 import { FiMenu } from 'react-icons/fi'
 import { toggleDrawer } from '../../state/actions/syncActions'
-import { roleTypes } from '../../state/types/AuthTypes'
 import NavbarButton, { LogoutButton, NavbarButtonType } from './NavbarButton'
 
 const navbarBreakpoint = 640
@@ -27,11 +24,17 @@ export const unAuthenticatedButtons: NavbarButtonType[] = [
         href: "/login",
         authed: false
     },
+    /* { */
+    /*     text: "Show QR", */
+    /*     href: "/showTransactionCode", */
+    /*     authed: true, */
+    /*     role: "ADMIN" */
+    /* }, */
+
     {
-        text: "Show QR",
-        href: "/showTransactionCode",
+        text: "My Profile",
+        href: "/profile",
         authed: true,
-        role: "ADMIN"
     },
     {
         text: "Dashboard",

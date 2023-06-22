@@ -58,3 +58,4 @@ export interface TransactionUserBound extends Transaction {
 }
 
 export type DashboardComponent = "commission" | "descendants" | "salesHistory"
+

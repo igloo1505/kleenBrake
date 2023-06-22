@@ -1,14 +1,13 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import * as jose from 'jose'
-
-
-
 export const issuer = 'pPlatform:issuer'
 export const audience = 'pPlatform:audience'
 export const alg = 'HS256'
 const authTokenPath = 'auth'
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
+
+
 
 const genToken = async (userId: string, rememberMe: boolean = false) => {
     const jwt = await new jose.SignJWT({ userId: userId })
@@ -55,7 +54,7 @@ const isValidToken = async (req: NextRequest, userId: string) => {
         return false
     }
     let valid = await verifyToken(token, userId)
-    return valid
+    return valid ? userId : false
 }
 
 export const isAuthenticated = async (req: NextRequest) => {
@@ -105,4 +104,5 @@ export const refreshTokens = async (req: NextRequest, res: NextResponse) => {
     }
     return res
 }
+
 

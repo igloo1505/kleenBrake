@@ -17,6 +17,12 @@ enum ROLE {
     BANNED
 }
 
+enum SUBSCRIPTION {
+    active
+    inactive
+    pending
+}
+
 model User {
     id          Int       @id @default(autoincrement())
     username    String    @unique
@@ -24,6 +30,7 @@ model User {
     password    String
     role        ROLE      @default(USER)
     createdAt   DateTime  @default(now())
+    stripeId    String?
     parentId    Int?
     parent      User?     @relation("ParentChild", fields: [parentId], references: [id])
     children    User[]    @relation("ParentChild")
@@ -41,6 +48,7 @@ model Transaction {
 
 model Dashboard {
     id           Int           @id @default(autoincrement())
+    subscription SUBSCRIPTION  @default(inactive)
     transactions Transaction[]
     User         User[]
 }
