@@ -179,12 +179,16 @@ export const days = [
 ]
 
 export const parseEditProfileFormData = (data: EditProfileFormData) => {
+    console.log("Data in parseDateStuff: ", data)
     return {
-        ...data,
+        user: {
+            email: data.email
+        },
+        dashboard: {},
         payment: {
             ...data.payment,
             expiration: {
-                month: months.filter((m) => m.label === data.payment.expiration.month)[0].value,
+                month: parseInt(data.payment.expiration.month),
                 day: parseInt(data.payment.expiration.day)
             }
         }

@@ -15,6 +15,7 @@ const router = createEdgeRouter<NextRequest, RequestContext>();
 
 router
     .put(async (req, ctx) => {
+        console.log("In here....")
         try {
             const data = await req.json()
             const userId = await isAuthenticated(req)
@@ -25,8 +26,14 @@ router
                 where: {
                     username: userId
                 },
-                data: data
+                data: {
+                    ...data.user,
+                    dashboard: {
+                        ...data.dashboard
+                    }
+                }
             })
+            console.log("updatedUser: ", updatedUser)
             return NextResponse.json({
                 updatedUser: updatedUser,
                 success: true
