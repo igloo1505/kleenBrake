@@ -38,7 +38,7 @@ router
                     username: authed
                 }
             })
-            if (!user || !user.subscriptionPM) {
+            if (!user || !user.subscriptionId) {
                 return NextResponse.json({
                     success: false,
                     publicError: "An error occurred. Please try logging in again."
