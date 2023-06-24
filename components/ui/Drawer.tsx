@@ -7,6 +7,7 @@ import store, { RootState } from '../../state/store';
 import { toggleDrawer } from '../../state/actions/syncActions';
 import { useClickOutside } from 'primereact/hooks'
 import { Sidebar } from 'primereact/sidebar';
+import { LogoutButton } from '@/navigation/NavbarButton';
 
 const connector = connect((state: RootState, props: any) => ({
     drawerOpen: state.UI.drawerOpen,
@@ -33,6 +34,7 @@ const Drawer = connector(({ drawerOpen }: DrawerProps) => {
                 {unAuthenticatedButtons.map((b, i) => {
                     return <DrawerButton item={b} key={`drawer-button-${i}`} />
                 })}
+                <LogoutButton />
             </div>
         </Sidebar>
     )

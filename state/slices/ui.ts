@@ -64,11 +64,17 @@ const slice = createSlice({
             })
             state.modals = newModals as RootState['UI']['modals']
         },
+        setLoading(state, action: PayloadAction<boolean | undefined>) {
+            state.loading = typeof action.payload === "undefined" ? false : action.payload
+        },
+        setScreenMessage(state, action: PayloadAction<string | undefined>) {
+            state.screenMessage = action.payload
+        },
         setActiveDashboardComponent(state, action: PayloadAction<DashboardComponent>) {
             state.dashboard.activeComponent = action.payload
         }
     }
 })
 
-export const { toggleDarkMode, setActiveTheme, setUIAppData, showToast, toggleDrawer, toggleModal, closeAllModals, setActiveDashboardComponent, publicError } = slice.actions
+export const { toggleDarkMode, setActiveTheme, setScreenMessage, setLoading, setUIAppData, showToast, toggleDrawer, toggleModal, closeAllModals, setActiveDashboardComponent, publicError } = slice.actions
 export default slice.reducer

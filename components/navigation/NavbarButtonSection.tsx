@@ -25,7 +25,7 @@ export const unAuthenticatedButtons: NavbarButtonType[] = [
         authed: false
     },
     {
-        text: "Show QR",
+        text: "Referal Link",
         href: "/showRefererCode",
         authed: true,
     },
@@ -36,7 +36,7 @@ export const unAuthenticatedButtons: NavbarButtonType[] = [
     },
     {
         text: "Dashboard",
-        href: (id: string | number) => `/dashboard/${id}`,
+        href: '/dashboard',
         authed: true
     },
 ]
@@ -66,9 +66,10 @@ const NavbarButtonSection = () => {
             {viewportWidth >= navbarBreakpoint && unAuthenticatedButtons.map((b, i) => {
                 return <NavbarButton button={b} key={`navbar-button-${i}`} />
             })}
-            <LogoutButton />
-            {viewportWidth < navbarBreakpoint && viewportWidth >= 0 && <FiMenu className={'cursor-pointer'} onClick={() => toggleDrawer()} />}
-
+            {
+                viewportWidth >= navbarBreakpoint && <LogoutButton />
+            }
+            {viewportWidth < navbarBreakpoint && viewportWidth >= 0 && <FiMenu className={'cursor-pointer h-[2rem] w-auto'} onClick={() => toggleDrawer()} />}
         </div>
     )
 }

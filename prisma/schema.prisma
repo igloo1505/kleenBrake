@@ -24,18 +24,19 @@ enum SUBSCRIPTION {
 }
 
 model User {
-    id          Int       @id @default(autoincrement())
-    username    String    @unique
-    email       String    @unique
-    password    String
-    role        ROLE      @default(USER)
-    createdAt   DateTime  @default(now())
-    stripeId    String?
-    parentId    Int?
-    parent      User?     @relation("ParentChild", fields: [parentId], references: [id])
-    children    User[]    @relation("ParentChild")
-    dashboard   Dashboard @relation(fields: [dashboardId], references: [id])
-    dashboardId Int
+    id             Int       @id @default(autoincrement())
+    username       String    @unique
+    email          String    @unique
+    password       String
+    role           ROLE      @default(USER)
+    createdAt      DateTime  @default(now())
+    stripeId       String?
+    subscriptionId String?
+    parentId       Int?
+    parent         User?     @relation("ParentChild", fields: [parentId], references: [id])
+    children       User[]    @relation("ParentChild")
+    dashboard      Dashboard @relation(fields: [dashboardId], references: [id])
+    dashboardId    Int
 }
 
 model Transaction {

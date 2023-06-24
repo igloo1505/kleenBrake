@@ -9,7 +9,9 @@ import WrappedFooter from 'components/wrappedComponents/wrappedFooter';
 import WrappedModals from 'components/wrappedComponents/wrappedModals';
 import { checkAuthenticated } from '#/utils/authWithCookiesHook';
 import WrappedAuthObserver from '@/wrappedComponents/wrappedAuthObserver';
-import { useParams } from 'next/navigation';
+import WrappedLoadingIndicator from '@/wrappedComponents/wrappedLoadingIndicator';
+import WrappedScreenMessage from '@/wrappedComponents/wrappedScreenMessage';
+
 
 
 const Layout = async ({ children, media }: {
@@ -23,8 +25,10 @@ const Layout = async ({ children, media }: {
             <body>
                 <WrappedAuthObserver authenticated={isAuthed} />
                 <WrappedModals />
-                <WrappedToast />
                 <WrappedNavbar />
+                <WrappedLoadingIndicator />
+                <WrappedScreenMessage />
+                <WrappedToast />
                 <div className='pt-2 pb-4' style={{
                     minHeight: "calc(100vh - 260px)"
                 }}>

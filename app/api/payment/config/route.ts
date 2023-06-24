@@ -20,7 +20,7 @@ router
             const price = await stripe.prices.retrieve(process.env.PRICE!);
 
             return NextResponse.json({
-                publicKey: process.env.STRIPE_PUBLISHABLE_KEY,
+                publicKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
                 unitAmount: price.unit_amount,
                 currency: price.currency,
             })

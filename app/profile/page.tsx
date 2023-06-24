@@ -1,5 +1,6 @@
 import { prisma } from '#/db/db'
 import { validateFromCookieValues } from '#/utils/auth'
+import { getSubscriptionStatus } from '#/utils/serverUtils'
 import ProfileSummary from '@/profile/ProfileSummary'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
@@ -11,6 +12,7 @@ const ProfilePage = async () => {
     const cookieJar = cookies()
     const authToken = cookieJar.get("auth")?.value
     const userId = cookieJar.get("userId")?.value
+    console.log("userId: ", userId)
     if (!userId || !authToken) {
         return redirect("/")
     }

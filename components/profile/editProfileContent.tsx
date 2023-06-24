@@ -31,11 +31,11 @@ const EditProfileContent = ({ formData, disabled, handlePaymentInfoChange, handl
             <div className={'text-2xl w-full text-center my-4 underline underline-offset-4 decoration-primary'}>Payment Information</div>
             <TextInput label="Name on Account" disabled={disabled} name="nameOnAccount" value={formData.payment.nameOnAccount || ""} onChange={handlePaymentInfoString} />
             <InputMask className={'mt-4'} mask="999-999-9999" disabled={disabled} slotChar='x' id="card-number-input" label="Card Number" name="cardNumber" keyfilter={"int"} value={formData.payment.cardNumber} onChange={handlePaymentInfoChange} onComplete={handleMaskedComplete} />
-            <div className={'mt-4 grid grid-cols-[1fr_260px] gap-4'}>
+            <div className={'mt-4 grid grid-cols-1 grid-rows-[auto_1fr] xxs:grid-rows-2 md:grid-cols-[1fr_260px] md:grid-rows-1 gap-4'}>
                 <InputMask id="card-security-input" label="Card Security Number" disabled={disabled} keyfilter={"int"} name="securityNumber" value={formData.payment.securityNumber} mask="999" slotChar='x' onChange={handlePaymentInfoChange} onComplete={handleMaskedComplete} />
                 <div className={'flex flex-col gap-2'}>
                     <label htmlFor='expiration-group'>Expiration</label>
-                    <div className={'grid grid-cols-[1fr_100px] w-full gap-2 flex-nowrap place-self-center'} id="expiration-group">
+                    <div className={'grid grid-cols-1 grid-rows-2 xxs:grid-cols-[1fr_100px] xxs:grid-rows-1 w-full gap-2 flex-nowrap place-self-center'} id="expiration-group">
                         <Dropdown className={'w-full'} disabled={disabled} dataKey='month-' options={months} value={formData.payment.expiration.month} onChange={(e) => {
                             setFormData({
                                 ...formData,

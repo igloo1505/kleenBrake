@@ -20,9 +20,9 @@ const connector = connect((state: RootState, props: any) => ({
 }))
 
 const UnauthenticatedHome = connector(({ appData }: { appData: AppDataType }) => {
-    useEffect(() => {
-        store.dispatch(logout())
-    }, [])
+    /* useEffect(() => { */
+    /*     store.dispatch(logout()) */
+    /* }, []) */
     return (
         <div className={'w-screenFit'}>
             <HeroSection />

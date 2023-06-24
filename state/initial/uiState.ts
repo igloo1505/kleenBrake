@@ -3,6 +3,8 @@ import appData, { AppDataType } from "./appData"
 
 export type initialUiStateType = {
     darkMode: boolean
+    loading: boolean
+    screenMessage: string | undefined
     lightId: string | undefined | null
     darkId: string | undefined | null
     hasDarkMode: boolean
@@ -28,16 +30,18 @@ if (typeof window !== "undefined") {
 
 const initialUiState: initialUiStateType = {
     darkMode: true,
+    loading: false,
+    screenMessage: undefined,
     hasDarkMode: true,
     lightId: "lightThemeId",
     darkId: "darkThemeId",
     appData: initialAppData as AppDataType,
     toast: {
         severity: "info",
-        timeout: 0,
         isOpen: false,
         content: "",
-        title: ""
+        title: "",
+        timeout: 0
     },
     drawerOpen: false,
     modals: {

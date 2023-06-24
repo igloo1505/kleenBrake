@@ -6,6 +6,9 @@ import React from 'react'
 import './styles.scss'
 import RecentSales from '@/dashboard/RecentSales';
 import TopSellers from '@/dashboard/TopSellers';
+import { checkAuthenticated } from '#/utils/authWithCookiesHook';
+import { validateOrRedirect } from '#/utils/serverUtils';
+import { redirect } from 'next/navigation';
 
 
 interface DashboardProps {
@@ -15,17 +18,12 @@ interface DashboardProps {
 }
 
 
-const Dashboard = async ({ params: {
-    userId
-} }: DashboardProps) => {
-    const data = await prisma.user.findFirst({
-        where: {
-            id: Number(userId)
-        },
-        include: {
-            dashboard: true
-        }
-    })
+const Dashboard = async ({ }: DashboardProps) => {
+    const valid = await validateOrRedirect()
+    if (!valid.user) {
+        return redirect(valid.redirectPath || "/")
+    }
+    const data = valid.user
     return (
         <div className={'w-full'}>
             <DashboardGraphGrid data={data} />

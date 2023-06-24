@@ -42,7 +42,7 @@ const LoginCard = () => {
     const handleSubmit = async () => {
         const r = await loginUser(data)
         if (r.success && r.user.id) {
-            router.push(`/dashboard/${r.user.id}`)
+            router.push(`/dashboard`)
         }
     }
 

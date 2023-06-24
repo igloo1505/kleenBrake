@@ -41,7 +41,7 @@ const Toast = connector(({ toast: {
     }
 
     const show = () => {
-        ref.current.show({ severity: severity, summary: title, detail: content });
+        ref.current.show({ severity: severity, summary: title, detail: content, life: timeout || 3000 });
         setTimeout(() => {
             clear()
         }, timeout || 5000)

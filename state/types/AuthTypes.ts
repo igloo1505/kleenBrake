@@ -28,3 +28,8 @@ export interface RetrievedUserData {
     age: string | number
     role: roleTypes
 }
+
+
+export interface CreateStripeCustomerType {
+    name: string
+}

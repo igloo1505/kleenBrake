@@ -35,3 +35,7 @@ export const capitalizeWord = (s: string): string => {
     return `${s.charAt(0).toUpperCase()}${s.slice(1, s.length)}`
 }
 
+
+export const formatHost = (host: string) => {
+    return host.startsWith("http://") || host.startsWith("https://") ? host : `http://${host}`
+}

@@ -82,7 +82,7 @@ const SignUpCard = (props: SignUpCardProps) => {
         const returnData = await createNewUser(data)
         const userId = returnData.newUser.id
         if (returnData.success && userId) {
-            router.push(`/dashboard/${userId}`)
+            router.push(`/dashboard`)
         }
     }
     return (

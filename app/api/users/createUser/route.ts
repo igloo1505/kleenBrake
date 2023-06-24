@@ -19,6 +19,7 @@ router
             const json = await req.json()
             const user: NewUserData = json.user
             const hashedPassword = await encryptPassword(user.password)
+            const refererId = req.cookies.get("refererId")?.value || false
             if (!user.agreeToTerms || !user.confirmAge) {
                 return NextResponse.json({ success: false, publicError: "You must agree to the terms of service and confirm your age to register." })
             }
@@ -40,6 +41,24 @@ router
                     dashboard: true
                 }
             })
+            if (refererId) {
+                const parent = await prisma.user.findFirst({
+                    where: {
+                        id: parseInt(refererId)
+                    }
+                })
+                if (parent) {
+                    const updatedParent = await prisma.user.update({
+                        where: {
+                            id: parent.id
+                        },
+                        data: {
+                            parentId: newUser.id
+                        }
+                    })
+                    console.log("updatedParent: ", updatedParent)
+                }
+            }
             let res = NextResponse.json({ newUser: newUser, success: true });
             res = await setToken(req, res, newUser.username)
             return res
