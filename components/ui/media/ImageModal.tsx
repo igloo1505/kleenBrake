@@ -10,24 +10,6 @@ interface ImageModalProps {
 }
 
 const ImageModal = ({ url }: ImageModalProps) => {
-    const router = useRouter()
-
-    const onDismiss = useCallback(() => {
-        router.back();
-    }, [router]);
-
-    const onKeyDown = useCallback(
-        (e: KeyboardEvent) => {
-            if (e.key === "Escape") onDismiss();
-        },
-        [onDismiss]
-    );
-
-    useEffect(() => {
-        document.addEventListener("keydown", onKeyDown);
-        return () => document.removeEventListener("keydown", onKeyDown);
-    }, [onKeyDown]);
-
 
     return (
         <MediaModalWrapper>

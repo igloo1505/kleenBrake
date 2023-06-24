@@ -5,7 +5,7 @@ import { FiMenu } from 'react-icons/fi'
 import { toggleDrawer } from '../../state/actions/syncActions'
 import NavbarButton, { LogoutButton, NavbarButtonType } from './NavbarButton'
 
-const navbarBreakpoint = 640
+const navbarBreakpoint = 768
 
 
 export const unAuthenticatedButtons: NavbarButtonType[] = [
@@ -30,14 +30,19 @@ export const unAuthenticatedButtons: NavbarButtonType[] = [
         authed: true,
     },
     {
-        text: "My Profile",
-        href: "/profile",
+        text: "Laundry Service",
+        href: "/purchaseService",
         authed: true,
     },
     {
         text: "Dashboard",
         href: '/dashboard',
         authed: true
+    },
+    {
+        text: "My Profile",
+        href: "/profile",
+        authed: true,
     },
 ]
 

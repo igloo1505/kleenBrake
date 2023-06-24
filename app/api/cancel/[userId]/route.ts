@@ -4,6 +4,8 @@ import { createEdgeRouter } from "next-connect";
 import { prisma, stripe } from "#/db/db";
 import ErrorHandler from "#/errors/ErrorHandler"
 import { isAuthenticated } from "#/utils/auth";
+import { CancelSubscriptionResponse } from "#/state/types/AuthTypes";
+
 
 interface RequestContext {
     params: {
@@ -11,17 +13,11 @@ interface RequestContext {
     }
 }
 
+
 const router = createEdgeRouter<NextRequest, RequestContext>();
 
 
 router
-    // middleware
-    // .use(async (req, event, next) => {
-    //   const start = Date.now();
-    //   await next(); // call next in chain
-    //   const end = Date.now();
-    //   console.log(`Request took ${end - start}ms`);
-    // })
 
     .post(async (req, ctx) => {
         try {
@@ -38,20 +34,36 @@ router
                     username: authed
                 }
             })
-            if (!user || !user.subscriptionId) {
+            if (!user || !user.subscriptionId || parseInt(id) !== user.id) {
                 return NextResponse.json({
                     success: false,
                     publicError: "An error occurred. Please try logging in again."
                 })
             }
-
-            // const subscription = await stripe.subscriptions.update(
-            //     'sub_49ty4767H20z6a',
-            //     {
-            //         cancel_at_period_end: true,
+            const cancelledSubscription = await stripe.subscriptions.update(
+                user.subscriptionId,
+                {
+                    cancel_at_period_end: true,
+                }
+            );
+            const cancelResponse: CancelSubscriptionResponse = {
+                cancelAt: cancelledSubscription.cancel_at,
+                canceledAt: cancelledSubscription.canceled_at
+            }
+            // NOTE: Leaving the subscription key in the prisma object for now so that the subscription will return active until the end of the billing cycle. It will be automatically removed once cancelled and expired in getSubscription
+            // const updatedUser = await prisma.user.update({
+            //     where: {
+            //         id: user.id
+            //     },
+            //     data: {
+            //         subscriptionId: null
             //     }
-            // );
-            return NextResponse.json({});
+            // })
+            return NextResponse.json({
+                success: true,
+                // updatedUser: updatedUser,
+                cancelData: cancelResponse
+            });
         } catch (err) {
             console.error(err)
             return NextResponse.json({ success: false });

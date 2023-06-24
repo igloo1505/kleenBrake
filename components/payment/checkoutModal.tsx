@@ -1,5 +1,6 @@
 "use client"
 import React, { FormEventHandler, useEffect, useState } from 'react'
+import { createPortal } from 'react-dom';
 import {
     PaymentElement,
     LinkAuthenticationElement,
@@ -8,7 +9,6 @@ import {
 } from "@stripe/react-stripe-js";
 import { Dashboard, User } from '@prisma/client';
 import { StripePaymentElementOptions } from '@stripe/stripe-js';
-import type { EditProfileFormData } from '@/profile/editProfileCard';
 import Button from '@/io/Button';
 import { formatHost } from '#/utils/formatting';
 import axios from 'axios';
@@ -20,10 +20,8 @@ import { setScreenMessage, showToast } from '#/state/slices/ui';
 interface Props {
     open: boolean
     setIsOpen: (v: boolean) => void
+    quantity: number
     user: (User & { dashboard: Dashboard })
-    paymentPrefill: EditProfileFormData['payment']
-    subscriptionId: string
-    nameOnAccount: string | undefined
 }
 
 interface CheckoutDataType {
@@ -31,7 +29,7 @@ interface CheckoutDataType {
     email: string
 }
 
-const CheckoutForm = ({ open, setIsOpen, nameOnAccount, subscriptionId, user, paymentPrefill: prefill }: Props) => {
+const CheckoutModal = ({ open, setIsOpen, user, quantity }: Props) => {
     const stripe = useStripe();
     const host = formatHost(window.location.host)
     const elements = useElements();
@@ -112,26 +110,17 @@ const CheckoutForm = ({ open, setIsOpen, nameOnAccount, subscriptionId, user, pa
             }
         }
         if (!error) {
-            const axiosRes = await axios.put("/api/edit/profile",
-                {
-                    user: {
-                        subscriptionId: subscriptionId,
-                        nameOnAccount: nameOnAccount
-                    }
-                }, defaultAxiosConfig)
-            if (axiosRes.data.success) {
-                setIsOpen(false)
-                store.dispatch(setScreenMessage("Redirecting..."))
-                store.dispatch(showToast({
-                    isOpen: true,
-                    content: "Your subscription status has been updated!",
-                    severity: "success",
-                    timeout: 3000
-                }))
+            setIsOpen(false)
+            store.dispatch(showToast({
+                isOpen: true,
+                timeout: 5000,
+                content: `Success! You've successfully purchased ${quantity} loads of laundry.`
+            }))
+            await axios.post("/api/service/save", null, defaultAxiosConfig)
+            if (window.location.pathname === "/purchaseService") {
                 setTimeout(() => {
-                    store.dispatch(setScreenMessage())
                     window.location.pathname = "/dashboard"
-                }, 3000)
+                }, 5000)
             }
         }
         setIsLoading(false);
@@ -140,14 +129,14 @@ const CheckoutForm = ({ open, setIsOpen, nameOnAccount, subscriptionId, user, pa
     const paymentElementOptions: StripePaymentElementOptions = {
         defaultValues: {
             billingDetails: {
-                name: prefill.nameOnAccount,
+                name: user.nameOnAccount as string,
                 email: user.email,
             }
         },
         layout: "auto"
     }
 
-    return (
+    return createPortal(
         <>
             <div className={'absolute top-[40px] left-[50%] -translate-x-[50%] bg-[--surface-card] rounded-xl border border-[--surface-border] w-full max-w-[calc(100vw-6rem)] z-[999] px-8 py-6'}>
                 <form id="payment-form" onSubmit={handleSubmit}>
@@ -171,12 +160,13 @@ const CheckoutForm = ({ open, setIsOpen, nameOnAccount, subscriptionId, user, pa
                 </form>
             </div>
             <div className={'w-screen h-screen fixed top-0 left-0 bg-gray-800 bg-opacity-80 z-[998]'} onClick={() => setIsOpen(false)} />
-        </>
+        </>,
+        document.body
     )
 }
 
 
-CheckoutForm.displayName = "CheckoutForm"
+CheckoutModal.displayName = "CheckoutForm"
 
 
-export default CheckoutForm;
+export default CheckoutModal;

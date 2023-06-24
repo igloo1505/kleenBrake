@@ -8,22 +8,23 @@ import { EditProfileFormData } from './editProfileCard'
 import { days, months } from '#/utils/dateStuff'
 import { showToast } from '#/state/slices/ui'
 import store from '#/state/store'
-import { subscribe } from 'diagnostics_channel'
+import { getSubscriptionResponse } from '#/utils/serverUtils'
 
 
 
 interface ProfileSummaryProps {
     user: (User & { dashboard: Dashboard })
+    subscription: getSubscriptionResponse | undefined
 }
 
 
-const ProfileSummary = ({ user }: ProfileSummaryProps) => {
+const ProfileSummary = ({ user, subscription }: ProfileSummaryProps) => {
     const host = window.location.host
     const refUrl = `${host}/referer/${user.id}`
     const formData: EditProfileFormData = {
         email: user.email,
         payment: {
-            nameOnAccount: "",
+            nameOnAccount: user.nameOnAccount || "",
             cardNumber: "xxx-xxx-xxxx",
             securityNumber: "111",
             expiration: {
@@ -31,7 +32,7 @@ const ProfileSummary = ({ user }: ProfileSummaryProps) => {
                 day: days[0].label
             },
             agreeToTerms: false,
-            subscribed: Boolean(user.subscriptionId)
+            subscribed: subscription?.active || false
         }
     }
 

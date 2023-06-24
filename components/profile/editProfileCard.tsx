@@ -15,11 +15,13 @@ import SubscribeModal from '@/legal/Subscribe';
 import { StripeElementsOptions, loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from '@/payment/checkoutForm';
+import { getSubscriptionResponse } from '#/utils/serverUtils';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 interface Props {
     user: (User & { dashboard: Dashboard }),
+    subscription: getSubscriptionResponse | undefined
 }
 
 
@@ -39,7 +41,7 @@ export interface EditProfileFormData {
     }
 }
 
-const EditProfileCard = ({ user }: Props) => {
+const EditProfileCard = ({ user, subscription }: Props) => {
     const [clientSecret, setClientSecret] = useState<{
         clientSecret: string,
         subscriptionId: string
@@ -52,11 +54,10 @@ const EditProfileCard = ({ user }: Props) => {
     const [showCheckout, setShowCheckout] = useState(false)
     const setIntent = async () => {
         store.dispatch(setLoading(true))
-        const res = await axios.post("/api/customer", {
+        await axios.post("/api/customer", {
             name: formData.payment.nameOnAccount,
         }, defaultAxiosConfig)
         const res2 = await axios.post("/api/create-subscription", null, defaultAxiosConfig)
-        console.log("res: ", res)
         if (res2.data.success) {
             setClientSecret({
                 clientSecret: res2.data.clientSecret,
@@ -69,7 +70,7 @@ const EditProfileCard = ({ user }: Props) => {
     const [formData, setFormData] = useState<EditProfileFormData>({
         email: user.email,
         payment: {
-            nameOnAccount: "",
+            nameOnAccount: user.nameOnAccount || "",
             cardNumber: "",
             securityNumber: "",
             expiration: {
@@ -77,7 +78,7 @@ const EditProfileCard = ({ user }: Props) => {
                 day: days[0].label
             },
             agreeToTerms: false,
-            subscribed: Boolean(user.subscriptionId)
+            subscribed: subscription?.active || false
         }
     })
 
@@ -152,11 +153,32 @@ const EditProfileCard = ({ user }: Props) => {
         _setIsOpen(false)
     }
 
+    const cancelSubscription = async () => {
+        setSubOpen(false)
+        const res = await axios.post(`/api/cancel/${user.id}`)
+        if (res.data.success) {
+            store.dispatch(showToast({
+                isOpen: true,
+                content: "Your subscription was cancelled successfully.",
+                timeout: 3000
+            }))
+            setFormData({
+                ...formData,
+                payment: {
+                    ...formData.payment,
+                    subscribed: false
+                }
+            })
+        }
+    }
+
     const toggleSubscription = () => {
         if (!formData.payment.subscribed) {
             setSubOpen(false)
-            /* setShowCheckout(true) */
             setIntent()
+        }
+        if (formData.payment.subscribed) {
+            cancelSubscription()
         }
     }
     const launchSubscriptionModal = () => {
@@ -169,17 +191,11 @@ const EditProfileCard = ({ user }: Props) => {
         em?.addEventListener("click", launchSubscriptionModal)
     }, [])
 
-    const handleCheckout = () => {
-        console.log("Handle checkout here...")
-    }
 
     const stripeOptions: StripeElementsOptions = {
         clientSecret: clientSecret?.clientSecret,
     }
 
-    const cancelSubscription = async () => {
-        const res = await axios.post(`/api/cancel/${user.id}`)
-    }
 
     return (
         <>
@@ -187,7 +203,7 @@ const EditProfileCard = ({ user }: Props) => {
             <SubscribeModal open={subOpen} setIsOpen={setSubOpen} toggleSubscriptionStatus={toggleSubscription} subscribed={formData.payment.subscribed} />
             {clientSecret && (
                 <Elements options={stripeOptions} stripe={stripePromise}>
-                    <CheckoutForm open={showCheckout} subscriptionId={clientSecret.subscriptionId} user={user} setIsOpen={setShowCheckout} checkout={handleCheckout} paymentPrefill={formData.payment} />
+                    <CheckoutForm open={showCheckout} subscriptionId={clientSecret.subscriptionId} user={user} setIsOpen={setShowCheckout} paymentPrefill={formData.payment} nameOnAccount={formData.payment.nameOnAccount} />
                 </Elements>
             )}
             <div className={'w-full px-6 py-6 mt-8 rounded-xl h-full transition-transform duration-500 flex flex-col gap-2 max-w-[80vw] md:max-w-[600px] bg-[--surface-card]'} style={{

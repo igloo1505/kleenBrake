@@ -111,7 +111,7 @@ export const getSubscriptionStatus = async (id: string): Promise<boolean> => {
     return false
 }
 
-export const getStripeCustomer = async (username: string, data: CreateStripeCustomerType) => {
+export const getStripeCustomer = async (username: string, data?: CreateStripeCustomerType) => {
     const user = await prisma.user.findFirst({
         where: {
             username: username
@@ -123,12 +123,104 @@ export const getStripeCustomer = async (username: string, data: CreateStripeCust
     if (!user) {
         return false
     }
-    const customer = await stripe.customers.create({
-        email: user.email,
-        name: data.name,
-    });
-    return customer
+    const name = data?.name || user.nameOnAccount
+    if (name) {
+        const customer = await stripe.customers.create({
+            email: user.email,
+            name: name
+        });
+        return customer
+    }
+    return false
+}
+
+export interface getSubscriptionResponse {
+    subscription: Awaited<ReturnType<typeof stripe.subscriptions.retrieve>>,
+    active: boolean
+}
+
+export const getSubscription = async (subscriptionId: string): Promise<getSubscriptionResponse> => {
+    const sub = await stripe.subscriptions.retrieve(subscriptionId)
+    const active = sub?.status === "active"
+    if (!active) {
+        await prisma.user.update({
+            where: {
+                subscriptionId: subscriptionId
+            },
+            data: {
+                subscriptionId: null
+            }
+        })
+    }
+    return {
+        subscription: sub,
+        active: active
+    }
+}
+
+export const getServiceItemDetails = async () => {
+    const service = await stripe.prices.retrieve(process.env.LAUNDRY_SERVICE_PRICE_KEY!)
+    return service
+}
+
+export const getServicePurchase = async (paymentId: string) => {
+    const purchase = await stripe.paymentIntents.retrieve(paymentId)
+    return purchase
 }
 
 
+interface ChildUser extends User {
+    depth: number
+}
 
+
+let parent: ChildUser[] = []
+let temp: ChildUser[] = []
+const getChildren = async (parentId: number, depth: number): Promise<ChildUser[] | undefined> => {
+    if (depth === 1) {
+        temp = []
+    }
+    if (depth > 1 && temp.length === 0) {
+        const d = parent
+        temp = []
+        parent = []
+        depth = 1
+        return d
+    }
+    const users = await prisma.user.findMany({
+        where: {
+            parentId: depth === 1 ? parentId : temp[0].id
+        },
+        include: {
+            dashboard: true
+        }
+    })
+    const data = users.map((u) => {
+        return {
+            ...u,
+            depth: depth
+        }
+    })
+    if (data.length === 0 && depth === 1) {
+        return data
+    }
+    temp = [...temp, ...data]
+    if ((temp.length >= 0)) {
+        const t: ChildUser[] = []
+        temp.forEach((j) => {
+            if (j.id === parentId) {
+                parent.push(j)
+            }
+            if (j.id !== parentId) {
+                t.push(j)
+            }
+        })
+        temp = t
+        getChildren(temp[0].id, temp[0].depth + 1)
+    }
+}
+
+export const populateChildren = async (userId: string): Promise<ChildUser[]> => {
+    const children = await getChildren(parseInt(userId), 1)
+    return children || []
+}

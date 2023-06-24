@@ -182,7 +182,8 @@ export const parseEditProfileFormData = (data: EditProfileFormData) => {
     console.log("Data in parseDateStuff: ", data)
     return {
         user: {
-            email: data.email
+            email: data.email,
+            nameOnAccount: data.payment.nameOnAccount
         },
         dashboard: {},
         payment: {

@@ -1,6 +1,6 @@
 import { prisma } from '#/db/db'
 import { validateFromCookieValues } from '#/utils/auth'
-import { getSubscriptionStatus } from '#/utils/serverUtils'
+import { getSubscription, getSubscriptionStatus } from '#/utils/serverUtils'
 import ProfileSummary from '@/profile/ProfileSummary'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
@@ -31,9 +31,13 @@ const ProfilePage = async () => {
     if (!user) {
         return redirect("/")
     }
+    let subscription;
+    if (user.subscriptionId) {
+        subscription = await getSubscription(user.subscriptionId)
+    }
     return (
         <div className={'px-8 py-8 flex flex-col justify-center items-center'}>
-            <ProfileSummary user={user} />
+            <ProfileSummary user={user} subscription={subscription} />
         </div>
     )
 }

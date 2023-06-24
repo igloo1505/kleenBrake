@@ -33,3 +33,9 @@ export interface RetrievedUserData {
 export interface CreateStripeCustomerType {
     name: string
 }
+
+
+export interface CancelSubscriptionResponse {
+    cancelAt: number | null
+    canceledAt: number | null
+}
