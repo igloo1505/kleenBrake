@@ -5,6 +5,7 @@ import { getQrData } from "#/utils/serverUtils";
 import { isAuthenticatedAdmin } from "#/utils/serverUtils";
 import { isAuthenticated, verifyToken } from "#/utils/auth";
 import { NextResponse } from "next/server";
+import { formatHost } from "#/utils/formatting";
 
 
 
@@ -27,10 +28,11 @@ handler.get(async (req: NextApiRequest | any, res: NextApiResponse | any) => {
             console.error("Not authenticated to retrieve referer qr image")
             return res.redirect("/")
         }
-        const host = req.headers?.host
+        const host = formatHost(req.headers?.host)
         if (!host) {
             return NextResponse.json({
                 success: false,
+                hostFound: host,
                 consoleError: "host not found."
             })
         }
@@ -48,9 +50,9 @@ handler.get(async (req: NextApiRequest | any, res: NextApiResponse | any) => {
 
 export default handler.handler()
 
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};
+// export const config = {
+//     api: {
+//         bodyParser: false,
+//     },
+// };
 
