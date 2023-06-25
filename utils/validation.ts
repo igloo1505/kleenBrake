@@ -37,3 +37,13 @@ export const validateEmail = (val: string) => {
     }
     return true
 }
+
+export const arrayOverlap = (arr1: any[], arr2: any[]): boolean => {
+    let v = false
+    arr2.forEach((a) => {
+        if (arr1.indexOf(a) >= 0) {
+            v = true
+        }
+    })
+    return v
+}

@@ -9,6 +9,8 @@ interface SalesHistoryChartProps {
 }
 
 
+/* BUG: Fix this issue with the height not renderering properly on the inital load. This likely applies to other charts as well. */
+
 const SalesHistoryChart = (props: SalesHistoryChartProps) => {
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});

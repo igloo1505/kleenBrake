@@ -10,6 +10,7 @@ import CheckoutModal from './checkoutModal';
 import { Dashboard, User } from '@prisma/client';
 import { StripeElementsOptions, loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import { useRouter } from 'next/navigation';
 
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
@@ -25,6 +26,8 @@ interface formDataType {
 }
 
 const PurchaseServiceForm = ({ unitCost, user }: PurchaseServiceFormProps) => {
+
+    const router = useRouter();
     const [clientSecret, setClientSecret] = useState<{
         clientSecret: string,
     } | undefined>()
@@ -86,7 +89,7 @@ const PurchaseServiceForm = ({ unitCost, user }: PurchaseServiceFormProps) => {
                     decrementButtonClassName="p-button-danger" incrementButtonClassName="p-button-success" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus"
                 />
                 <div className={'w-full flex flex-row justify-end items-center gap-4'}>
-                    <Button label="Cancel" severity='danger' />
+                    <Button label="Cancel" severity='danger' onClick={() => router.back()} />
                     <Button label="Purchase" onClick={setIntent} />
                 </div>
             </div>

@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import { RootState } from '../../state/store';
 import { InitialAuthStateType } from '../../state/initial/authState';
 import { logoutUser } from '../../state/actions/authActions';
+import { ROLE } from '@prisma/client';
+import { arrayOverlap } from '#/utils/validation';
 
 const connector = connect((state: RootState, props: any) => ({
     auth: state.auth,
@@ -16,11 +18,32 @@ export interface NavbarButtonType {
     text: string,
     href: string | ((id: string | number) => string)
     authed: boolean | "both"
-    role?: roleTypes | undefined
+    roles?: roleTypes[] | undefined
 }
 
 export const shouldDisplay = (button: NavbarButtonType, authenticated: boolean, user: InitialAuthStateType['user']) => {
-    return (button.authed === "both" || button.authed === authenticated) && (!button.role || button.role === user?.role)
+    const protectedRoles: ROLE[] = ["EMPLOYEE", "ADMIN", "REP"]
+    if (authenticated && button.roles && arrayOverlap(protectedRoles, button.roles)) {
+        return user?.role ? button.roles.indexOf(user.role) >= 0 : false
+    }
+    if (button.authed === "both" || button.authed === authenticated) {
+        return true
+    }
+    /* const _protectedRoles = () => { */
+    /*     let v = true */
+    /*     if (!button.roles) { */
+    /*         return true */
+    /*     } */
+    /*     button.roles.forEach((r) => { */
+    /*         if (protectedRoles.indexOf(r) > -1) { */
+    /*             v = false */
+    /*         } */
+    /*     }) */
+    /*     return v */
+    /* } */
+    /* const isProtected = _protectedRoles() */
+    return false
+    /* return (button.authed === "both" || button.authed === authenticated) && (isProtected) && (!isProtected || !button.roles || (user?.role && button.roles.indexOf(user?.role) > -1)) || false */
 }
 
 

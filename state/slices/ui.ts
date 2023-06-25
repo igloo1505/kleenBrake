@@ -4,6 +4,7 @@ import { AppDataType } from "../initial/appData";
 import { DashboardComponent, ToastConfigType } from "../../types/UITypes";
 import { ModalKeyType } from "../initial/uiState";
 import type { RootState } from "../store";
+import { JobType } from "#/types/jobTypes";
 
 const slice = createSlice({
     name: "UI",
@@ -72,9 +73,12 @@ const slice = createSlice({
         },
         setActiveDashboardComponent(state, action: PayloadAction<DashboardComponent>) {
             state.dashboard.activeComponent = action.payload
+        },
+        setJobModal(state, action: PayloadAction<JobType | null>) {
+            state.jobModal = action.payload
         }
     }
 })
 
-export const { toggleDarkMode, setActiveTheme, setScreenMessage, setLoading, setUIAppData, showToast, toggleDrawer, toggleModal, closeAllModals, setActiveDashboardComponent, publicError } = slice.actions
+export const { toggleDarkMode, setJobModal, setActiveTheme, setScreenMessage, setLoading, setUIAppData, showToast, toggleDrawer, toggleModal, closeAllModals, setActiveDashboardComponent, publicError } = slice.actions
 export default slice.reducer

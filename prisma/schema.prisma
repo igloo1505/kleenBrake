@@ -15,6 +15,8 @@ enum ROLE {
     USER
     ADMIN
     BANNED
+    REP
+    EMPLOYEE
 }
 
 enum SUBSCRIPTION {
@@ -37,6 +39,8 @@ model User {
     children       User[]    @relation("ParentChild")
     dashboard      Dashboard @relation(fields: [dashboardId], references: [id])
     dashboardId    Int
+    jobsPickedUp   Job[]     @relation("pickupEmployee")
+    jobsDroppedOff Job[]     @relation("dropoffEmployee")
 }
 
 model Transaction {
@@ -53,4 +57,42 @@ model Dashboard {
     subscription SUBSCRIPTION  @default(inactive)
     transactions Transaction[]
     User         User[]
+}
+
+model Location {
+    id        Int     @id @default(autoincrement())
+    street    String
+    zip       Int
+    city      String
+    state     String  @default("Il")
+    unit      String?
+    entryCode String?
+    Job       Job[]
+}
+
+model Window {
+    id         Int      @id @default(autoincrement())
+    start      DateTime
+    end        DateTime
+    jobPickup  Job[]    @relation("pickupWindow")
+    jobDropoff Job[]    @relation("dropoffWindow")
+}
+
+model Job {
+    id              Int       @id @default(autoincrement())
+    dateSubmitted   DateTime  @default(now())
+    datePickedUp    DateTime?
+    dateReturned    DateTime?
+    message         String?
+    quantity        Int
+    pickupWindow    Window    @relation(fields: [pickupWindowId], references: [id], name: "pickupWindow")
+    pickupWindowId  Int       @unique
+    dropOffWindow   Window    @relation(fields: [dropOffWindowId], references: [id], name: "dropoffWindow")
+    dropOffWindowId Int       @unique
+    location        Location  @relation(fields: [locationId], references: [id])
+    locationId      Int
+    pickedUpBy      User?     @relation(fields: [pickupUserId], references: [id], name: "pickupEmployee")
+    pickupUserId    Int?
+    droppedOffBy    User?     @relation(fields: [dropOffUserId], references: [id], name: "dropoffEmployee")
+    dropOffUserId   Int?
 }

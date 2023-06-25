@@ -1,4 +1,5 @@
-
+import dayjs from 'dayjs'
+import urlencode from 'urlencode'
 
 const excludeCharacters = ",./\\;:'\"[]{}!@#$%^&*()|`~"
 
@@ -38,4 +39,25 @@ export const capitalizeWord = (s: string): string => {
 
 export const formatHost = (host: string) => {
     return host.startsWith("http://") || host.startsWith("https://") ? host : `http://${host}`
+}
+
+export const formatDate = (d: Date, time?: boolean) => {
+    const formatStr = time ? "MM-D-YY [at] h:mm a" : "MM-D-YY"
+    return dayjs(d).format(formatStr)
+}
+
+export const formatGoogleMapsQuery = ({ street, city, state, zip }: { street: string, city?: string, state: string, zip?: number }) => {
+    let str = 'https://www.google.com/maps/search/'
+    str += urlencode.encode(street)
+    if (city) {
+        str += ",+"
+        str += urlencode.encode(city)
+    }
+    str += ",+"
+    str += urlencode.encode(`${state || "Il"}`)
+    if (zip) {
+        str += ",+"
+        str += urlencode.encode(`${zip}`)
+    }
+    return str
 }

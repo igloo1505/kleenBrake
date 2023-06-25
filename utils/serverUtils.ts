@@ -5,8 +5,9 @@ import * as jose from 'jose'
 import { NextApiRequest } from 'next'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
-import { Dashboard, User } from '@prisma/client'
+import { Dashboard, Prisma, ROLE, User } from '@prisma/client'
 import { CreateStripeCustomerType } from '#/state/types/AuthTypes'
+import { CreateJobType, maxJobsPerPage } from '#/types/jobTypes'
 
 const secret = new TextEncoder().encode(process.env.QR_SECRET!)
 
@@ -62,10 +63,9 @@ export const acceptTransactionCode = async (transActionCode: string, userId: str
 
 
 
-export const validateOrRedirect = async (): Promise<{
+export const validateOrRedirect = async (roles?: ROLE[]): Promise<{
     user: (User & { dashboard: Dashboard }) | null,
     redirectPath: false | null | string
-    subscribed?: boolean | null
 }> => {
     const cookieJar = cookies()
     const authToken = cookieJar.get("auth")?.value
@@ -91,13 +91,16 @@ export const validateOrRedirect = async (): Promise<{
             dashboard: true
         }
     })
-    // TODO: Handle getting subscription status here...
-    const subscribed = false
+    if (!user || (roles && roles.indexOf(user?.role) === -1)) {
+        return {
+            user: null,
+            redirectPath: "/"
+        }
+    }
     if (user) {
         return {
             user: user,
             redirectPath: false,
-            subscribed: subscribed
         }
     }
     return {
@@ -148,7 +151,8 @@ export const getSubscription = async (subscriptionId: string): Promise<getSubscr
                 subscriptionId: subscriptionId
             },
             data: {
-                subscriptionId: null
+                subscriptionId: null,
+                role: "USER"
             }
         })
     }
@@ -224,3 +228,63 @@ export const populateChildren = async (userId: string): Promise<ChildUser[]> => 
     const children = await getChildren(parseInt(userId), 1)
     return children || []
 }
+
+export const parseCreateJob = (j: CreateJobType, locationId?: number): Prisma.JobCreateArgs => {
+    const locId = locationId || j.location.id
+    delete j.location.id
+    const _loc: Prisma.LocationCreateNestedOneWithoutJobInput = typeof locId === "undefined" ? {
+        create: {
+            ...j.location
+        }
+    } : {
+        connectOrCreate: {
+            where: {
+                id: locId
+            },
+            create: {
+                ...j.location
+            }
+        }
+    }
+    const data: Prisma.JobCreateArgs = {
+        data: {
+            ...j.job,
+            pickupWindow: {
+                create: {
+                    ...j.pickup
+                }
+            },
+            dropOffWindow: {
+                create: {
+                    ...j.dropoff
+                }
+            },
+            location: _loc
+        }
+    }
+    return data
+}
+
+export const getActiveJobs = async (page?: number, onlyActive: boolean = true) => {
+    const jobs = await prisma.job.findMany({
+        ...(onlyActive && {
+            where: {
+                dateReturned: null
+            }
+        }),
+        orderBy: {
+            dateSubmitted: "asc"
+        },
+        include: {
+            pickupWindow: true,
+            dropOffWindow: true,
+            location: true,
+            pickedUpBy: true,
+            droppedOffBy: true,
+        },
+        ...(page && { skip: maxJobsPerPage * (page - 1) }),
+        ...(page && { take: maxJobsPerPage })
+    })
+    return jobs
+}
+

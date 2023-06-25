@@ -1,6 +1,6 @@
-import type { Dashboard, User } from "@prisma/client"
+import type { Dashboard, ROLE, User } from "@prisma/client"
 
-export type roleTypes = "USER" | "SELLER" | "ADMIN" | "BANNED"
+export type roleTypes = ROLE
 
 export interface LoginUserData {
     email: string

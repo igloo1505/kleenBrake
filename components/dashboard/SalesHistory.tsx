@@ -14,7 +14,7 @@ const SalesHistory = ({ salesHistory: history }: SalesHistoryProps) => {
         <div className={'dashboardCard w-full grid grid-rows-[2rem_1fr] max-h-[min(560px,80vh)]'} style={{
             minHeight: "max(40vh, 400px)",
         }}>
-            <div className={'dashboardCard-title'}>Recent Sales</div>
+            <div className={'dashboardCard-title'}>Sales History</div>
             <div className={'w-full h-full flex justify-center items-center overflow-hidden'}>
                 <SalesHistoryChart />
             </div>

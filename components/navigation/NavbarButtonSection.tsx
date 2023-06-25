@@ -28,6 +28,13 @@ export const unAuthenticatedButtons: NavbarButtonType[] = [
         text: "Referal Link",
         href: "/showRefererCode",
         authed: true,
+        roles: ["REP"]
+    },
+    {
+        text: "Employee",
+        href: "/portal",
+        authed: true,
+        roles: ["EMPLOYEE", "ADMIN"]
     },
     {
         text: "Laundry Service",
@@ -37,7 +44,8 @@ export const unAuthenticatedButtons: NavbarButtonType[] = [
     {
         text: "Dashboard",
         href: '/dashboard',
-        authed: true
+        authed: true,
+        roles: ["ADMIN", "REP"]
     },
     {
         text: "My Profile",

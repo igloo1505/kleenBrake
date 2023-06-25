@@ -40,3 +40,6 @@ notes/**
 
 /app/api/users/seed
 /app/api/users/seed/**
+
+/app/api/jobs/seed
+/app/api/jobs/seed/**

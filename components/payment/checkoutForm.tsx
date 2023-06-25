@@ -116,7 +116,8 @@ const CheckoutForm = ({ open, setIsOpen, nameOnAccount, subscriptionId, user, pa
                 {
                     user: {
                         subscriptionId: subscriptionId,
-                        nameOnAccount: nameOnAccount
+                        nameOnAccount: nameOnAccount,
+                        role: "REP"
                     }
                 }, defaultAxiosConfig)
             if (axiosRes.data.success) {

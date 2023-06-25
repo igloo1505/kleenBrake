@@ -1,8 +1,10 @@
 import { DashboardComponent, ToastConfigType } from "#/types/UITypes"
+import { JobType } from "#/types/jobTypes"
 import appData, { AppDataType } from "./appData"
 
 export type initialUiStateType = {
     darkMode: boolean
+    jobModal: JobType | null
     loading: boolean
     screenMessage: string | undefined
     lightId: string | undefined | null
@@ -30,6 +32,7 @@ if (typeof window !== "undefined") {
 
 const initialUiState: initialUiStateType = {
     darkMode: true,
+    jobModal: null,
     loading: false,
     screenMessage: undefined,
     hasDarkMode: true,
