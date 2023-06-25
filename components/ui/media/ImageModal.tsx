@@ -1,19 +1,19 @@
 "use client"
-import Image, { ImageLoader } from 'next/image'
-import { useCallback, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import Image, { ImageLoader, ImageLoaderProps } from 'next/image'
 import MediaModalWrapper from '../modals/MediaModalWrapper';
 
 
 interface ImageModalProps {
     url: string
     loader?: ImageLoader
+    overRideLoader?: boolean
 }
 
-const ImageModal = ({ url, loader }: ImageModalProps) => {
-    console.log("targetUrl: ", url)
+const ImageModal = ({ url, loader, overRideLoader }: ImageModalProps) => {
+    const _loader = ({ src }: ImageLoaderProps) => `${src}`
     const params = {
-        ...(loader && { loader })
+        ...(loader && { loader }),
+        ...(overRideLoader && { loader: _loader })
     }
     return (
         <MediaModalWrapper>

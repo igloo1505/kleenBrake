@@ -1,12 +1,15 @@
+import ImageWithoutSrcParsed from '@/ui/ImageWithoutSrcParse'
 import ImageModal from '@/ui/media/ImageModal'
+import MediaModalWrapper from '@/ui/modals/MediaModalWrapper'
 import { ImageLoaderProps } from 'next/image'
 import React from 'react'
 
 
 const TransactionQrModal = () => {
-    const loader = ({ src }: ImageLoaderProps) => `${src}`
     return (
-        <ImageModal url='/api/refererQr' loader={loader} />
+        <MediaModalWrapper>
+            <ImageWithoutSrcParsed src="/api/refererQr" fill={true} alt="Referal Link" />
+        </MediaModalWrapper>
     )
 }
 

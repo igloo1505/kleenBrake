@@ -1,5 +1,6 @@
 import { validateOrRedirect } from '#/utils/serverUtils';
-import Image, { ImageLoaderProps } from 'next/image';
+import ImageWithoutSrcParsed from '@/ui/ImageWithoutSrcParse';
+import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import React from 'react'
 
@@ -10,10 +11,11 @@ const ShowRefererCodePage = async () => {
         redirect(valid.redirectPath || "/")
     }
 
-    const loader = ({ src }: ImageLoaderProps) => `${src}`
     return (
-        <div className={'w-full flex flex-col justify-center items-center'}>
-            <Image src={`/api/refererQr`} width={500} height={500} alt="Referer Link" loader={loader} />
+        <div className={'w-full flex justify-center items-center'}>
+            <div className={'relative w-full flex flex-col justify-center items-center max-w-[min(500px,80vw)] h-[min(80vh,450px)] max-h-[calc(100vh-8rem)]'}>
+                <ImageWithoutSrcParsed src={`/api/refererQr`} fill={true} alt="Referer Link" />
+            </div>
         </div>
     )
 }

@@ -38,7 +38,7 @@ handler.get(async (req: NextApiRequest | any, res: NextApiResponse | any) => {
         }
         const targetUrl = `${host}/referer/${userId}`
         console.log("targetUrl: ", targetUrl)
-        const qrPng = qr.image(targetUrl, { type: "svg" })
+        const qrPng = qr.image(targetUrl, { type: "png" })
         qrPng.pipe(res)
     } catch (err) {
         console.error(err)
@@ -50,9 +50,9 @@ handler.get(async (req: NextApiRequest | any, res: NextApiResponse | any) => {
 
 export default handler.handler()
 
-// export const config = {
-//     api: {
-//         bodyParser: false,
-//     },
-// };
+export const config = {
+    api: {
+        bodyParser: false,
+    },
+};
 
