@@ -1,3 +1,5 @@
+import type { Dashboard, User } from "@prisma/client"
+
 export type roleTypes = "USER" | "SELLER" | "ADMIN" | "BANNED"
 
 export interface LoginUserData {
@@ -14,10 +16,6 @@ export interface NewUserData {
     confirmAge: boolean
     agreeToTerms: boolean
 }
-
-// export interface ModelOffersTypes {
-
-// }
 
 
 export interface RetrievedUserData {
@@ -38,4 +36,8 @@ export interface CreateStripeCustomerType {
 export interface CancelSubscriptionResponse {
     cancelAt: number | null
     canceledAt: number | null
+}
+
+export interface ExtendedUser extends User {
+    dashboard: Dashboard
 }

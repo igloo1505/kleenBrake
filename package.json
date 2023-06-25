@@ -29,6 +29,7 @@
         "@types/react-redux": "^7.1.25",
         "axios": "^1.4.0",
         "bcrypt": "^5.1.0",
+        "chart.js": "^4.3.0",
         "clsx": "^1.2.1",
         "colors": "^1.4.0",
         "dayjs": "^1.11.7",

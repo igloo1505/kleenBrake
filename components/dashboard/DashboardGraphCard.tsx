@@ -50,7 +50,7 @@ const DashboardGraphCard = ({ type, data }: DashboardGraphCardProps) => {
                 <div className={'flex flex-row justify-start items-center gap-0 flex-nowrap w-full mt-2'} style={{
                     ...(type === "Revenue" && { transform: "translateX(-0.5rem)" })
                 }}>
-                    {type === "Revenue" && <FaDollarSign className={'h-[1.875rem] w-fit'} />}
+                    {type === "Revenue" && <FaDollarSign className={'h-[1.875rem] w-fit max-w-[30px]'} />}
                     <div className={'text-3xl font-bold h-full flex justify-center items-center'}>
                         {parsedData.total}
                     </div>

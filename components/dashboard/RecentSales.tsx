@@ -1,15 +1,14 @@
+import { ParsedChartData } from '#/types/chartData';
 import { Dashboard, User } from '@prisma/client';
 import React from 'react'
 
 
 
 interface RecentSalesProps {
-    data: (User & {
-        dashboard: Dashboard | null;
-    }) | null
+    recentSales: ParsedChartData['recentSales']
 }
 
-const RecentSales = ({ data }: RecentSalesProps) => {
+const SalesHistory = ({ recentSales: recent }: RecentSalesProps) => {
     return (
         <div className={'dashboardCard grid grid-rows-[2rem_1fr]'} style={{
             minHeight: "min(30vh, 300px)"
@@ -23,7 +22,7 @@ const RecentSales = ({ data }: RecentSalesProps) => {
 }
 
 
-RecentSales.displayName = "RecentSales"
+SalesHistory.displayName = "SalesHistory"
 
 
-export default RecentSales;
+export default SalesHistory;

@@ -1,21 +1,23 @@
 import { Dashboard, User } from '@prisma/client';
 import React from 'react'
 import { Chart } from 'primereact/chart'
+import SalesHistoryChart from './charts/salesHistoryChart';
+import { ParsedChartData } from '#/types/chartData';
 
 
 interface SalesHistoryProps {
-    data: (User & {
-        dashboard: Dashboard | null;
-    }) | null
+    salesHistory: ParsedChartData['salesHistory']
 }
 
-const SalesHistory = ({ data }: SalesHistoryProps) => {
+const SalesHistory = ({ salesHistory: history }: SalesHistoryProps) => {
     return (
-        <div className={'dashboardCard w-full grid grid-rows-[2rem_1fr]'} style={{
-            minHeight: "min(40vh, 400px)",
+        <div className={'dashboardCard w-full grid grid-rows-[2rem_1fr] max-h-[min(560px,80vh)]'} style={{
+            minHeight: "max(40vh, 400px)",
         }}>
             <div className={'dashboardCard-title'}>Recent Sales</div>
-            <div className={'w-full h-full flex justify-center items-center'}>Sales History Chart will go here</div>
+            <div className={'w-full h-full flex justify-center items-center overflow-hidden'}>
+                <SalesHistoryChart />
+            </div>
         </div>
     )
 }

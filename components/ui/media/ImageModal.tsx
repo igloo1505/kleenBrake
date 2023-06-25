@@ -10,7 +10,7 @@ interface ImageModalProps {
 }
 
 const ImageModal = ({ url }: ImageModalProps) => {
-
+    console.log("targetUrl: ", url)
     return (
         <MediaModalWrapper>
             <div className={''}>

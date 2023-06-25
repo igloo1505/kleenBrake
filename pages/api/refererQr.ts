@@ -4,6 +4,7 @@ import qr from 'qr-image'
 import { getQrData } from "#/utils/serverUtils";
 import { isAuthenticatedAdmin } from "#/utils/serverUtils";
 import { isAuthenticated, verifyToken } from "#/utils/auth";
+import { NextResponse } from "next/server";
 
 
 
@@ -18,7 +19,6 @@ const handler = createRouter()
 
 handler.get(async (req: NextApiRequest | any, res: NextApiResponse | any) => {
     try {
-        console.log("In getQr Route")
         // const userId = await isAuthenticated(req)
         const userId = req.cookies?.userId
         const auth = req.cookies?.auth
@@ -28,7 +28,15 @@ handler.get(async (req: NextApiRequest | any, res: NextApiResponse | any) => {
             return res.redirect("/")
         }
         const host = req.headers?.host
-        const qrPng = qr.image(`${host}/referer/${userId}`, { type: "png" })
+        if (!host) {
+            return NextResponse.json({
+                success: false,
+                consoleError: "host not found."
+            })
+        }
+        const targetUrl = `${host}/referer/${userId}`
+        console.log("targetUrl: ", targetUrl)
+        const qrPng = qr.image(targetUrl, { type: "svg" })
         qrPng.pipe(res)
     } catch (err) {
         console.error(err)

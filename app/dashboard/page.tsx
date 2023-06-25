@@ -1,4 +1,3 @@
-import { prisma } from '#/db/db';
 import DashboardGraphGrid from '@/dashboard/DashboardGraphGrid';
 import SalesByDepth from '@/dashboard/SalesByDepth';
 import SalesHistory from '@/dashboard/SalesHistory';
@@ -6,9 +5,9 @@ import React from 'react'
 import './styles.scss'
 import RecentSales from '@/dashboard/RecentSales';
 import TopSellers from '@/dashboard/TopSellers';
-import { checkAuthenticated } from '#/utils/authWithCookiesHook';
 import { validateOrRedirect } from '#/utils/serverUtils';
 import { redirect } from 'next/navigation';
+import { parseChartData } from '#/types/chartData';
 
 
 interface DashboardProps {
@@ -24,16 +23,17 @@ const Dashboard = async ({ }: DashboardProps) => {
         return redirect(valid.redirectPath || "/")
     }
     const data = valid.user
+    const parsedData = parseChartData(data)
     return (
         <div className={'w-full'}>
             <DashboardGraphGrid data={data} />
             <div className={'w-full px-6 mt-6 grid grid-cols-1 lg:grid-cols-[1fr_200px] gap-4'}>
-                <SalesHistory data={data} />
+                <SalesHistory salesHistory={parsedData.salesHistory} />
                 <SalesByDepth data={data} />
             </div>
-            <div className={'w-full px-6 mt-6 grid grid-cols-1 lg:grid-cols-[200px_1fr] gap-4'}>
-                <TopSellers data={data} />
-                <RecentSales data={data} />
+            <div className={'w-full px-6 mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4'}>
+                <TopSellers topSellers={parsedData.topSellers} />
+                <RecentSales recentSales={parsedData.recentSales} />
             </div>
         </div>
     )

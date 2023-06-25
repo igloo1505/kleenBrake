@@ -73,7 +73,7 @@ const PurchaseServiceForm = ({ unitCost, user }: PurchaseServiceFormProps) => {
             <div className={'w-full px-6 py-6 mt-8 rounded-xl h-full transition-transform duration-500 flex flex-col items-center max-w-[80vw] md:max-w-[600px] bg-[--surface-card] gap-4'} style={{
                 border: "1px solid var(--surface-border)"
             }}>
-                <div className={'text-3xl'}>KleenBrake Laundry Service</div>
+                <div className={'text-3xl text-center'}>KleenBrake Laundry Service</div>
                 <div className={'text-xl'}>{`$${formData.cost.toFixed(2)}`}</div>
                 <InputNumber className={'my-6 w-fit'} value={formData.quantity} min={0} onValueChange={(e) => {
                     const amount: number = typeof e.value === "undefined" ? formData.quantity : e.value as number
