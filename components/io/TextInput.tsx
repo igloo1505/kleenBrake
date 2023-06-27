@@ -1,6 +1,7 @@
 import React, { ChangeEvent, ChangeEventHandler, FocusEventHandler, useState } from 'react'
 import { InputText } from 'primereact/inputtext';
 import { KeyFilterType } from 'primereact/keyfilter';
+import clsx from 'clsx';
 
 
 
@@ -16,6 +17,7 @@ interface TextInputProps {
     onBlur?: FocusEventHandler
     keyfilter?: KeyFilterType
     disabled?: boolean
+    className?: string
 }
 
 const TextInput = (props: TextInputProps) => {
@@ -29,7 +31,7 @@ const TextInput = (props: TextInputProps) => {
         ...(props.disabled && { disabled: props.disabled }),
     }
     return (
-        <div className={'flex flex-col gap-2'}>
+        <div className={clsx('flex flex-col gap-2', props.className && props.className)}>
             {props.label && <label htmlFor={params.id}>{props.label}</label>}
             <InputText name={props.name} type={props.type ? props.type : "text"} value={props.value} onChange={props.onChange} {...params} />
             {props.helperText && <small id={params['aria-describedby']}>

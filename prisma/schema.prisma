@@ -41,6 +41,7 @@ model User {
     dashboardId    Int
     jobsPickedUp   Job[]     @relation("pickupEmployee")
     jobsDroppedOff Job[]     @relation("dropoffEmployee")
+    jobsRequested  Job[]     @relation("submittedBy")
 }
 
 model Transaction {
@@ -95,4 +96,6 @@ model Job {
     pickupUserId    Int?
     droppedOffBy    User?     @relation(fields: [dropOffUserId], references: [id], name: "dropoffEmployee")
     dropOffUserId   Int?
+    submittedBy     User?     @relation(fields: [submittedById], references: [id], name: "submittedBy")
+    submittedById   Int?
 }
