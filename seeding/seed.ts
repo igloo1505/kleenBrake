@@ -2,7 +2,7 @@ import axios from 'axios'
 import { jobs, users } from './seedData'
 import { NewUserData } from '../state/types/AuthTypes'
 import { defaultAxiosConfig } from '../state/types/NetworkTypes'
-import { Prisma, User } from '@prisma/client'
+import { Prisma, ROLE, User } from '@prisma/client'
 // import { Prisma } from '@prisma/client'
 // import { parseCreateJob } from '../utils/serverUtils'
 // import { prisma } from '../db/db'
@@ -16,10 +16,11 @@ const root = "http://localhost:3000"
 const seedUser = async (user: Omit<Prisma.UserCreateManyInput, "dashboardId" | "lineageId">, seededUsers: User[] = []) => {
     const l = seededUsers.length > focusChildren ? focusChildren : seededUsers.length
     const refererId = seededUsers[Math.floor(Math.random() * l)]?.id
-    const data: NewUserData = {
+    const data: (NewUserData & { role?: ROLE }) = {
         username: user.username,
         password: user.password,
         email: user.email,
+        role: user.role,
         ...(typeof refererId === "number" && { refererId: refererId }),
         age: 18 + Math.floor(Math.random() * (100 - 18)),
         confirmAge: true,

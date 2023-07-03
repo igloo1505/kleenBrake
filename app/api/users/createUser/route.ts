@@ -5,7 +5,7 @@ import { createEdgeRouter } from "next-connect";
 import { prisma } from "../../../../db/db";
 import { encryptPassword } from "../../../../utils/serverUtils";
 import { setToken } from "../../../../utils/auth";
-import { User } from "@prisma/client";
+import { ROLE, User } from "@prisma/client";
 
 interface RequestContext {
     // user: NewUserData
@@ -18,10 +18,9 @@ router
     .post(async (req) => {
         try {
             const json = await req.json()
-            const user: NewUserData = json.user
+            const user: (NewUserData & { role?: ROLE }) = json.user
             const hashedPassword = await encryptPassword(user.password)
             let refererId = user.refererId || req.cookies.get("refererId")?.value || false
-            console.log("refererId: ", refererId)
             if (!user.agreeToTerms || !user.confirmAge) {
                 return NextResponse.json({ success: false, publicError: "You must agree to the terms of service and confirm your age to register." })
             }
@@ -56,6 +55,7 @@ router
                     username: user.username,
                     email: user.email,
                     password: hashedPassword,
+                    ...(user.role && { role: user.role }),
                     ...(parent && {
                         parent: {
                             connect: {

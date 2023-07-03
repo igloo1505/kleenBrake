@@ -1,5 +1,5 @@
 import { CreateJobType } from "#/types/jobTypes";
-import { Prisma } from "@prisma/client";
+import { Prisma, ROLE } from "@prisma/client";
 
 const testPassword = "Password123!"
 
@@ -79,12 +79,17 @@ const nums = [
 
 
 export const users: Omit<Prisma.UserCreateManyInput, "dashboardId" | "lineageId">[] = nums.map((n, i): Omit<Prisma.UserCreateManyInput, "dashboardId" | "lineageId"> => {
+    const roles: { [s in string]: ROLE } = {
+        "Admin": "ADMIN",
+        "Employee": "EMPLOYEE",
+        "Other": "REP"
+    }
+    const role = Object.keys(roles).indexOf(n) !== -1 ? roles[n as keyof typeof roles] : roles["Other"]
     return {
         username: `user${n}`,
         email: `user${n}@gmail.com`,
         password: testPassword,
-        ...(n === "Admin" && { role: "ADMIN" }),
-        ...(n === "Employee" ? { role: "EMPLOYEE" } : { role: "REP" }),
+        role: role
     }
 })
 
