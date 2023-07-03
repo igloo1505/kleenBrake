@@ -310,20 +310,31 @@ export const getChildrenData = async (user: User) => {
         include: {
             dashboard: {
                 include: {
-                    transactions: true
+                    transactions: true,
+                    _count: {
+                        select: {
+                            transactions: true
+                        }
+                    }
                 }
             },
             children: {
                 include: {
                     dashboard: {
-                        select: {
-                            transactions: true
+                        include: {
+                            transactions: true,
+                            _count: {
+                                select: {
+                                    transactions: true
+                                }
+                            }
                         }
                     }
                 },
             }
         }
     })
+    console.log("lineage[0]: ", lineage[0].children[0])
     if (!lineage) return []
     return lineage
 }

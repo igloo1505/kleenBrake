@@ -9,7 +9,7 @@ interface TopSellerCardProps {
 
 const TopSellerCard = ({ seller }: TopSellerCardProps) => {
     return (
-        <div className={'w-full h-full grid grid-cols-[1fr_2fr] grid-rows-1 md:grid-cols-1 md:grid-rows-2'}>
+        <div className={'w-full h-full grid grid-cols-[1fr_2fr] grid-rows-1 md:grid-cols-1 md:grid-rows-2 bg-[--surface-section] rounded-lg px-4 py-4'}>
             <div>{seller.username}</div>
         </div>
     )

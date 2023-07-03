@@ -1,6 +1,7 @@
 import { ParsedChartData } from '#/types/chartData';
-import { Dashboard, User } from '@prisma/client';
 import React from 'react'
+import DashboardCardWithTitle from './DashboardCardWithTitle';
+import RecentSaleListItem from './RecentSaleListItem';
 
 
 
@@ -8,16 +9,22 @@ interface RecentSalesProps {
     recentSales: ParsedChartData['recentSales']
 }
 
-const SalesHistory = ({ recentSales: recent }: RecentSalesProps) => {
+const SalesHistory = ({ recentSales }: RecentSalesProps) => {
     return (
-        <div className={'dashboardCard grid grid-rows-[2rem_1fr]'} style={{
-            minHeight: "min(30vh, 300px)"
-        }}>
-            <div className={'dashboardCard-title'}>Recent Sales</div>
+        <DashboardCardWithTitle
+            style={{
+                minHeight: "min(30vh, 300px)"
+            }}
+            title="Recent Sales"
+        >
             <div className={'w-full h-full flex justify-center items-center'}>
-                Recent Sales Table will go here
+                {recentSales.length > 0 ? recentSales.map((s, i) => {
+                    return (
+                        <RecentSaleListItem item={s} key={`recent-sale-${i}`} />
+                    )
+                }) : <div className={'text-[--text-color]'}>No sales yet</div>}
             </div>
-        </div>
+        </DashboardCardWithTitle>
     )
 }
 

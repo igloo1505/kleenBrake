@@ -2,7 +2,6 @@ import DashboardGraphGrid from '@/dashboard/DashboardGraphGrid';
 import SalesByDepth from '@/dashboard/SalesByDepth';
 import SalesHistory from '@/dashboard/SalesHistory';
 import React from 'react'
-import './styles.scss'
 import RecentSales from '@/dashboard/RecentSales';
 import TopSellers from '@/dashboard/TopSellers';
 import { getChildrenData, validateOrRedirect } from '#/utils/serverUtils';

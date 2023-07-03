@@ -2,6 +2,7 @@ import { Dashboard, User } from '@prisma/client';
 import React from 'react'
 import SalesByDepthChart from './charts/byDepth';
 import { ParsedChartData } from '#/types/chartData';
+import DashboardCardWithTitle from './DashboardCardWithTitle';
 
 
 
@@ -11,15 +12,16 @@ interface SalesByDepthProps {
 
 const SalesByDepth = (props: SalesByDepthProps) => {
     return (
-        <div className={'dashboardCard w-full h-full grid grid-cols-1 grid-rows-[2rem_1fr] relative overflow-hidden'}
+        <DashboardCardWithTitle
+            title="Sales By Depth"
             style={{
                 minHeight: "max(20vh, 200px)"
-            }}>
-            <div className={'dashboardCard-title'}>Sales By Depth</div>
+            }}
+        >
             <div className={'w-full max-w-full h-full flex justify-center items-center text-center'}>
                 <SalesByDepthChart />
             </div>
-        </div>
+        </DashboardCardWithTitle>
     )
 }
 

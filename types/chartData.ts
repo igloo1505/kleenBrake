@@ -1,7 +1,12 @@
-import { dayOfWeekInterface, getPreviousWeek } from "#/db/dayjs"
+import dayjs, { dayOfWeekInterface, getPreviousWeek } from "#/db/dayjs"
 import { DashboardWithAll, UserWithAll, childrenDataType } from "#/state/types/AuthTypes"
-import { getChildrenData } from "#/utils/serverUtils"
+import { dateFormatNoTime } from "#/utils/formatting"
 import { Transaction, User } from "@prisma/client"
+
+const calculateProfit = (t: Transaction) => {
+    // BUG: This still needs to be fixed in multiple places.
+    return t.price
+}
 
 export type DayOfWeek = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday"
 
@@ -28,15 +33,24 @@ export const days: DayOfWeek[] = [
 
 export interface topSeller {
     username: string
-    totalSales: number
-    salesThisWeek: number
+    salesTotal: number
+    salesQuantity: number
+    thisWeek?: {
+        salesTotal: number
+        salesQuantity: number
+    }
+    transactions: Transaction[]
 }
 
 export interface RecentSale {
     soldBy: topSeller
     amount: number
     profit: number
-    date: Date
+    date: {
+        val: number
+        display: string
+    }
+    transactionId: number
 }
 
 export interface SalesByDepth {
@@ -62,15 +76,26 @@ export interface ParsedChartData {
         recentSalesDay,
         recentSalesDay,
     ]
-    topSellers: [
-        topSeller,
-        topSeller,
-        topSeller,
-        topSeller,
-        topSeller,
-    ]
+    topSellers: {
+        byQuantity: topSeller[]
+        byValue: topSeller[]
+    }
     totalDescendants: number
     recentSales: RecentSale[]
+}
+
+
+const getSalesTotal = (u: UserWithAll | UserWithChildrenAndTransactions) => {
+    let total = 0
+    u.dashboard.transactions.forEach((d) => total += d.price)
+    return total
+}
+
+
+const getSalesQuantity = (u: UserWithAll | UserWithChildrenAndTransactions) => {
+    let quant = 0
+    u.dashboard.transactions.forEach((d) => quant++)
+    return quant
 }
 
 const getSalesDay = (d: dayOfWeekInterface, transactions: Transaction[]): recentSalesDay => {
@@ -94,6 +119,7 @@ const getSalesDay = (d: dayOfWeekInterface, transactions: Transaction[]): recent
 type UserWithDepth = (User & { depth: number, children: User[] })
 type UserWithChildIds = (User & { children: { id: number }[] })
 type UserWithChildrenAndTransactions = (User & {
+    dashboard: DashboardWithAll
     children: (User & {
         dashboard: DashboardWithAll
     })[]
@@ -119,30 +145,72 @@ const groupByDepth = (data: UserWithAll, children: childrenDataType) => {
 }
 
 
-const getSalesByDepth = (user: UserWithAll, children: childrenDataType): ParsedChartData['salesByDepth'] => {
-    // console.log("children: ", children)
-    const reversed = children.reverse()
-    const depthData: SalesByDepth[] = []
-    const byDepth = groupByDepth(user, reversed)
-    const gatherDepth = (user: UserWithChildrenAndTransactions, depth: number = 1) => {
-        return
+const getRecentSales = (grouped: ReturnType<typeof getTopSellers>): ParsedChartData['recentSales'] => {
+    let tmp: RecentSale[] = []
+    grouped.byValue.map((s) => {
+        s.transactions.forEach((t) => {
+            let d = dayjs(t.date)
+            tmp.push({
+                soldBy: s,
+                amount: t.price,
+                profit: calculateProfit(t),
+                date: {
+                    val: d.unix(),
+                    display: d.format(dateFormatNoTime)
+                },
+                transactionId: t.id
+
+            })
+        })
+    })
+    return [] as ParsedChartData['recentSales']
+}
+
+
+const getTopSellers = (grouped: ReturnType<typeof groupByDepth>): ParsedChartData['topSellers'] => {
+    let tmp: topSeller[] = []
+    grouped.forEach((depth) => {
+        depth.forEach((u) => tmp.push({
+            username: u.username,
+            salesTotal: getSalesTotal(u),
+            salesQuantity: getSalesQuantity(u),
+            transactions: u.dashboard.transactions
+        }))
+    })
+    return {
+        byValue: tmp.sort((a, b) => a.salesTotal - b.salesTotal),
+        byQuantity: tmp.sort((a, b) => a.salesQuantity - b.salesQuantity)
+    } as ParsedChartData['topSellers']
+
+}
+
+const getSalesByDepth = (user: UserWithAll, children: childrenDataType): {
+    grouped: ReturnType<typeof groupByDepth>
+    salesByDepth: ParsedChartData['salesByDepth']
+} => {
+    const getTotal = (children: childrenDataType) => {
+        let total = 0
+        children.forEach((c) => {
+            c.dashboard.transactions.forEach((d) => total += d.price)
+        })
+        return total
     }
-    // byDepth.children.forEach((u) => {
-
-
-    // })
-    // console.log("byDepth: ", byDepth)
-    // console.log("byDepth: ", byDepth)
-    // const _children: SalesByDepth[] = []
-    // reversed.forEach((c, i, a) => {
-    //     console.log("c.createdAt: ", c.createdAt)
-    // })
-    // const getChildren = (user: (User & { children: { id: number }[] })) => {
-    //     const _children = []
-    //     // const _children = children.forEach((c) => )
-    //     return _children
-    // }
-    return []
+    const getQuantity = (children: childrenDataType) => {
+        let quant = 0
+        children.forEach((c) => {
+            c.dashboard.transactions.forEach((d) => quant++)
+        })
+        return quant
+    }
+    const byDepth = groupByDepth(user, children.reverse())
+    return {
+        grouped: byDepth,
+        salesByDepth: byDepth.map((d, i) => ({
+            depth: i + 1,
+            total: getTotal(d),
+            quantity: getQuantity(d)
+        }))
+    }
 }
 
 const getPreviousWeekData = (data: UserWithAll, children: childrenDataType): ParsedChartData['previousWeek'] => {
@@ -195,15 +263,16 @@ const getSalesHistory = (data: UserWithAll): [
 
 
 export const parseChartData = (user: UserWithAll, data: childrenDataType): ParsedChartData => {
+    const byDepth = getSalesByDepth(user, data)
+    const topSellers = getTopSellers(byDepth.grouped)
     return {
         previousWeek: getPreviousWeekData(user, data),
-        recentSales: [],
-        salesByDepth: getSalesByDepth(user, data),
+        recentSales: getRecentSales(topSellers),
+        salesByDepth: byDepth.salesByDepth,
         /// @ts-ignore
-        topSellers: [],
+        topSellers: topSellers,
         /// @ts-ignore
         salesHistory: getSalesHistory(user),
         totalDescendants: data.length || 0
-
     }
 }

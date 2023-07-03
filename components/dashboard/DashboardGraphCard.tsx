@@ -4,6 +4,7 @@ import React from 'react'
 import { FaDollarSign } from 'react-icons/fa'
 import { BsArrowDownRight, BsArrowUpRight } from 'react-icons/bs'
 import { percentChange } from '#/utils/formatting'
+import DashboardCardWithTitle from './DashboardCardWithTitle'
 
 export type DashboardGraphCardTypes = "money"
 
@@ -46,9 +47,9 @@ const DashboardGraphCard = ({ type, currentData, previousData, label }: Dashboar
     const status = currentData > previousData ? "green" : currentData < previousData ? "red" : "neutral"
     const pChange = percentChange(previousData, currentData)
     return (
-        <div className={'dashboardCard w-full grid grid-cols-[1fr_3fr] py-4'}>
-            <div className={'w-full flex flex-col justify-center items-center'}>
-                <div className={'text-xl font-bold opacity-[0.8] w-full'}>{label}</div>
+        <DashboardCardWithTitle title={label} padding={false}
+        >
+            <div className={'w-full flex flex-col justify-center items-center px-4 pb-4'}>
                 <div className={'flex flex-row justify-start items-center gap-0 flex-nowrap w-full mt-2'} style={{
                     ...(type === "money" && { transform: "translateX(-0.5rem)" })
                 }}>
@@ -59,7 +60,7 @@ const DashboardGraphCard = ({ type, currentData, previousData, label }: Dashboar
                 </div>
                 <PercentChangeDisplay status={status} percentChange={pChange} />
             </div>
-        </div>
+        </DashboardCardWithTitle>
     )
 }
 
