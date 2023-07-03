@@ -37,7 +37,6 @@ handler.get(async (req: NextApiRequest | any, res: NextApiResponse | any) => {
             })
         }
         const targetUrl = `${host}/referer/${userId}`
-        console.log("targetUrl: ", targetUrl)
         const qrPng = qr.image(targetUrl, { type: "png" })
         qrPng.pipe(res)
     } catch (err) {

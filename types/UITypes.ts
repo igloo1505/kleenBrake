@@ -59,3 +59,52 @@ export interface TransactionUserBound extends Transaction {
 
 export type DashboardComponent = "commission" | "descendants" | "salesHistory"
 
+
+
+
+export interface DashboardStyleType {
+    textColor: string
+    textColorSecondary: string
+    surfaceBorder: string
+    colors: [
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string,
+        string
+    ]
+}
+
+export const getDashboardStyles = (): DashboardStyleType | false => {
+    const s = getComputedStyle(document.documentElement)
+    const primaryColor = s.getPropertyValue("--primary-color")
+    if (primaryColor === "") {
+        return false
+    }
+    const checkVal = (p: string, other: string) => {
+        let j = s.getPropertyValue(`--${p}`)
+        return j.length === 0 ? other : j
+    }
+    return {
+        textColor: checkVal("primary-color", "#fff"),
+        textColorSecondary: "#212121",
+        surfaceBorder: "#888",
+        colors: [
+            "#fff",
+            "#fff",
+            "#fff",
+            "#fff",
+            "#fff",
+            "#fff",
+            "#fff",
+            "#fff",
+            "#fff",
+            "#fff",
+        ]
+    }
+}

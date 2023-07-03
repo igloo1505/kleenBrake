@@ -3,10 +3,9 @@ import { prisma, stripe } from '#/db/db'
 import { audience, decryptToken, issuer, alg, validateFromCookieValues } from './auth'
 import * as jose from 'jose'
 import { NextApiRequest } from 'next'
-import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
-import { Dashboard, Prisma, ROLE, User } from '@prisma/client'
-import { CreateStripeCustomerType } from '#/state/types/AuthTypes'
+import { Dashboard, Lineage, Prisma, ROLE, Transaction, User } from '@prisma/client'
+import { CreateStripeCustomerType, childrenDataType } from '#/state/types/AuthTypes'
 import { CreateJobType, maxJobsPerPage } from '#/types/jobTypes'
 
 const secret = new TextEncoder().encode(process.env.QR_SECRET!)
@@ -45,6 +44,7 @@ export const isAuthenticatedAdmin = async (req: NextApiRequest) => {
 }
 
 
+
 export const getQrData = async (transactionId: string, price: string | number) => {
     const jwt = await new jose.SignJWT({ transactionId: transactionId, price: price })
         .setProtectedHeader({ alg })
@@ -56,6 +56,7 @@ export const getQrData = async (transactionId: string, price: string | number) =
     return jwt
 }
 
+
 export const acceptTransactionCode = async (transActionCode: string, userId: string | number) => {
     console.log("transActionCode, userId: ", transActionCode, userId)
 
@@ -63,7 +64,7 @@ export const acceptTransactionCode = async (transActionCode: string, userId: str
 
 
 
-export const validateOrRedirect = async (roles?: ROLE[]): Promise<{
+export const validateOrRedirect = async (roles?: ROLE[], include?: Prisma.UserInclude): Promise<{
     user: (User & { dashboard: Dashboard }) | null,
     redirectPath: false | null | string
 }> => {
@@ -87,7 +88,7 @@ export const validateOrRedirect = async (roles?: ROLE[]): Promise<{
         where: {
             username: userId
         },
-        include: {
+        include: include ? include : {
             dashboard: true
         }
     })
@@ -288,3 +289,37 @@ export const getActiveJobs = async (page?: number, onlyActive: boolean = true) =
     return jobs
 }
 
+
+
+export const getChildrenData = async (user: User) => {
+    const lineage = await prisma.user.findMany({
+        where: {
+            AND: {
+                lineageId: user.lineageId,
+                createdAt: {
+                    gte: user.createdAt
+                },
+                id: {
+                    not: user.id
+                }
+            }
+        },
+        orderBy: {
+            createdAt: "asc"
+        },
+        include: {
+            dashboard: {
+                include: {
+                    transactions: true
+                }
+            },
+            children: {
+                select: {
+                    id: true
+                }
+            }
+        }
+    })
+    if (!lineage) return []
+    return lineage
+}

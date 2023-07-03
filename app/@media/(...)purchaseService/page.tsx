@@ -13,7 +13,6 @@ const PurchaseServiceModal = async (props: PurchaseServiceModalProps) => {
     const service = await getServiceItemDetails()
     const authed = await validateOrRedirect()
     if (!service?.unit_amount || !authed.user) {
-        console.log("No service found.")
         return null
     }
     return (

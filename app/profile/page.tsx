@@ -12,7 +12,6 @@ const ProfilePage = async () => {
     const cookieJar = cookies()
     const authToken = cookieJar.get("auth")?.value
     const userId = cookieJar.get("userId")?.value
-    console.log("userId: ", userId)
     if (!userId || !authToken) {
         return redirect("/")
     }

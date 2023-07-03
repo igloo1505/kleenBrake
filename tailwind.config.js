@@ -650,7 +650,7 @@ module.exports = {
             min: 'min-content',
             max: 'max-content',
             fit: 'fit-content',
-            contenetCol: "min(768px, 100vw - 4rem)",
+            contentCol: "min(768px, 100vw - 4rem)",
             prose: '65ch',
             ...breakpoints(theme('screens')),
         }),

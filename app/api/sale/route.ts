@@ -28,7 +28,7 @@ const router = createEdgeRouter<NextRequest, RequestContext>();
 
 router
 
-    .post(async (req, ctx) => {
+    .post(async (req) => {
         try {
             const userId = await isAuthenticated(req)
             const body = await req.json()
@@ -45,7 +45,6 @@ router
                 currency: "usd",
                 product: product.id
             })
-            console.log("price: ", price)
             return NextResponse.json({
                 success: true,
                 price: price

@@ -150,7 +150,7 @@ export const SectionSubTitle = ({ title }: { title: string }) => {
 
 const ColorItem = ({ color }: { color: { var: string, label?: string } }) => {
     return (
-        <div className={'w-[300px] max-w-contenetCol flex flex-row justify-between items-center gap-4'}>
+        <div className={'w-[300px] max-w-contentCol flex flex-row justify-between items-center gap-4'}>
             <div className={'w-[3rem] h-[3rem]'} style={{
                 backgroundColor: `var(${color.var})`
             }}></div>

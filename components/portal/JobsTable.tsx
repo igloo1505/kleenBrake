@@ -22,7 +22,6 @@ const DateTemplate = ({ d, time, falseIfNull }: { d?: Date | null | undefined, t
 }
 
 const SubmittedOn = (j: JobType) => {
-    console.log("j: ", j)
     return <DateTemplate d={j?.dateSubmitted} time={true} />
 }
 

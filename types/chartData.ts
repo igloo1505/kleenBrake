@@ -1,20 +1,28 @@
-export const days = [
+import { dayOfWeekInterface, getPreviousWeek } from "#/db/dayjs"
+import { DashboardWithAll, UserWithAll, childrenDataType } from "#/state/types/AuthTypes"
+import { Transaction, User } from "@prisma/client"
+
+export type DayOfWeek = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday"
+
+
+export interface recentSalesDay {
+    day: DayOfWeek
+    totalSales: number
+    totalQuantity: number
+    totalProfit: number
+    transactions: Transaction[]
+}
+
+
+export const days: DayOfWeek[] = [
+    "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
     "Saturday",
-    "Sunday"
 ]
-
-
-export interface recentSalesDay {
-    day: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday"
-    totalSales: number
-    totalQuantity: number
-    totalProfit: number
-}
 
 
 export interface topSeller {
@@ -30,8 +38,20 @@ export interface RecentSale {
     date: Date
 }
 
+export interface SalesByDepth {
+    depth: number
+    total: number
+    quantity: number
+}
 
 export interface ParsedChartData {
+    previousWeek: {
+        salesTotal: number
+        salesQuantity: number
+        profit: number
+        descendants: number
+    }
+    salesByDepth: SalesByDepth[],
     salesHistory: [
         recentSalesDay,
         recentSalesDay,
@@ -48,16 +68,143 @@ export interface ParsedChartData {
         topSeller,
         topSeller,
     ]
+    totalDescendants: number
     recentSales: RecentSale[]
 }
 
-
-export const parseChartData = (data: any): ParsedChartData => {
+const getSalesDay = (d: dayOfWeekInterface, transactions: Transaction[]): recentSalesDay => {
+    let filtered = transactions.filter((t) => {
+        let tDate = new Date(t.date).valueOf() / 1000
+        return tDate >= d.start.unix && tDate <= d.end?.unix
+    })
+    // BUG: Need to fix this totalProfit figure once the pricing is figured out.
+    let prices = filtered.map((t) => t.price)
+    let totalPrice = prices.length > 0 ? prices.reduce((a, b) => a + b) : 0
+    const totalProfit = totalPrice
     return {
+        day: d.label,
+        totalSales: totalPrice,
+        transactions: filtered,
+        totalQuantity: filtered.length,
+        totalProfit: totalProfit
+    }
+}
+
+type UserWithDepth = (User & { depth: number, children: User[] })
+type UserWithChildIds = (User & { children: { id: number }[] })
+type UserWithChildrenAndTransactions = (User & {
+    children: (User & {
+        dashboard: DashboardWithAll
+    })
+})
+
+const groupByDepth = (data: UserWithAll, children: childrenDataType): UserWithChildrenAndTransactions => {
+    const getChildren = (user: UserWithChildIds, child: UserWithChildIds[]) => {
+        const _child = child.filter((c) => {
+            return user.children.map((u) => u.id).indexOf(c.id) > -1
+        })
+        const _user: UserWithChildrenAndTransactions | any = {
+            ...user,
+            // TODO: You can definitely make this faster by slicing the array... but that's too much work for now.
+            children: _child.map((c, i) => getChildren(c, child))
+        }
+        // console.log("_child: ", _child)
+        return _user
+
+    }
+    const d = {
+        ...data,
+        children: data.children ? data.children.map((c) => ({ id: c.id })) : []
+    } as UserWithChildIds
+    return getChildren(d, children) as UserWithChildrenAndTransactions
+}
+
+
+const getSalesByDepth = (user: UserWithAll, children: childrenDataType): ParsedChartData['salesByDepth'] => {
+    console.log("user.id: ", user.id, user.username)
+    const reversed = children.reverse()
+    const depthData: SalesByDepth[] = []
+    const byDepth = groupByDepth(user, reversed)
+    const gatherDepth = (user: UserWithChildrenAndTransactions, depth: number = 1) => {
+        return
+    }
+    // byDepth.children.forEach((u) => {
+
+
+    // })
+    console.log("byDepth: ", byDepth)
+    // console.log("byDepth: ", byDepth)
+    // const _children: SalesByDepth[] = []
+    // reversed.forEach((c, i, a) => {
+    //     console.log("c.createdAt: ", c.createdAt)
+    // })
+    // const getChildren = (user: (User & { children: { id: number }[] })) => {
+    //     const _children = []
+    //     // const _children = children.forEach((c) => )
+    //     return _children
+    // }
+    return []
+}
+
+const getPreviousWeekData = (data: UserWithAll, children: childrenDataType): ParsedChartData['previousWeek'] => {
+    const week = getPreviousWeek(1)
+    const transactions = data.dashboard.transactions.filter((t) => {
+        const tDate = new Date(t.date).valueOf() / 1000
+        return tDate >= week[week.length - 1].start.unix && tDate <= week[0].end.unix
+    })
+
+    const getSalesTotal = () => transactions.length > 0 ? transactions.map((t) => t.price).reduce((a, b) => a + b) : 0
+
+    // BUG: Handle this profit thing here too...
+    const salesTotal = getSalesTotal()
+    const lineFiltered = children.filter((c) => {
+        const cDate = new Date(c.createdAt).valueOf() / 1000
+        return cDate >= week[week.length - 1].start.unix && cDate <= week[0].end.unix
+    }) || []
+
+    return {
+        salesTotal: salesTotal,
+        salesQuantity: transactions.length,
+        profit: salesTotal,
+        descendants: lineFiltered.length || 0
+    }
+
+}
+
+const getSalesHistory = (data: UserWithAll): [
+    recentSalesDay,
+    recentSalesDay,
+    recentSalesDay,
+    recentSalesDay,
+    recentSalesDay,
+    recentSalesDay,
+    recentSalesDay,
+] => {
+    const week = getPreviousWeek()
+    const transactions = data.dashboard.transactions.filter((t) => new Date(t.date).valueOf() / 1000 >= week[week.length - 1].start.unix)
+    let sales = week.map((w) => getSalesDay(w, transactions)) as [
+        recentSalesDay,
+        recentSalesDay,
+        recentSalesDay,
+        recentSalesDay,
+        recentSalesDay,
+        recentSalesDay,
+        recentSalesDay,
+    ]
+    return sales
+}
+
+
+export const parseChartData = (user: UserWithAll, data: childrenDataType): ParsedChartData => {
+    return {
+        previousWeek: getPreviousWeekData(user, data),
         recentSales: [],
+        salesByDepth: getSalesByDepth(user, data),
         /// @ts-ignore
         topSellers: [],
         /// @ts-ignore
-        salesHistory: []
+        salesHistory: getSalesHistory(user),
+        totalDescendants: data.length || 0
+
     }
 }

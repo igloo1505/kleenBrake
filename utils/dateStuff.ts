@@ -179,7 +179,6 @@ export const days = [
 ]
 
 export const parseEditProfileFormData = (data: EditProfileFormData) => {
-    console.log("Data in parseDateStuff: ", data)
     return {
         user: {
             email: data.email,

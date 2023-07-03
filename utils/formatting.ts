@@ -1,7 +1,20 @@
-import dayjs from 'dayjs'
+import { getPreviousWeek } from '#/db/dayjs'
+// import dayjs from 'dayjs'
+import dayjs from '#/db/dayjs'
 import urlencode from 'urlencode'
 
 const excludeCharacters = ",./\\;:'\"[]{}!@#$%^&*()|`~"
+
+export const percentChange = (a: number, b: number) => {
+    if (a === b) {
+        return 0
+    }
+    if (a === 0) {
+        return "N/A"
+    }
+    return (b - a) / a
+}
+
 
 export const formatTagText = (tag: string) => {
     let s = ""

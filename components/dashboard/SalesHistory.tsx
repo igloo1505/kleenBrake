@@ -1,6 +1,4 @@
-import { Dashboard, User } from '@prisma/client';
 import React from 'react'
-import { Chart } from 'primereact/chart'
 import SalesHistoryChart from './charts/salesHistoryChart';
 import { ParsedChartData } from '#/types/chartData';
 

@@ -21,7 +21,7 @@ const AboutUsTopSection = (props: AboutUsTopSectionProps) => {
     if (!us) return null;
 
     return (
-        <div className={'w-full flex flex-col justify-center items-center max-w-contenetCol'}>
+        <div className={'w-full flex flex-col justify-center items-center max-w-contentCol'}>
             <div className={'text-2xl md:text-3xl text-center mb-6 text-[--primary-color] font-bold'}>{us.missionTitle}</div>
             <div>{
                 us.description.map((p, i) => {

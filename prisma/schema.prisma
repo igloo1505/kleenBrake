@@ -42,6 +42,8 @@ model User {
     jobsPickedUp   Job[]     @relation("pickupEmployee")
     jobsDroppedOff Job[]     @relation("dropoffEmployee")
     jobsRequested  Job[]     @relation("submittedBy")
+    lineage        Lineage   @relation(fields: [lineageId], references: [id])
+    lineageId      Int
 }
 
 model Transaction {
@@ -77,6 +79,18 @@ model Window {
     end        DateTime
     jobPickup  Job[]    @relation("pickupWindow")
     jobDropoff Job[]    @relation("dropoffWindow")
+}
+
+model Lineage {
+    id           Int        @id @default(autoincrement())
+    line         User[]
+    familyTree   FamilyTree @relation(fields: [familyTreeId], references: [id])
+    familyTreeId Int        @default(1)
+}
+
+model FamilyTree {
+    id   Int       @id @default(autoincrement())
+    tree Lineage[]
 }
 
 model Job {

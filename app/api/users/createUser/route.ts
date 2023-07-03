@@ -5,6 +5,7 @@ import { createEdgeRouter } from "next-connect";
 import { prisma } from "../../../../db/db";
 import { encryptPassword } from "../../../../utils/serverUtils";
 import { setToken } from "../../../../utils/auth";
+import { User } from "@prisma/client";
 
 interface RequestContext {
     // user: NewUserData
@@ -14,52 +15,93 @@ const router = createEdgeRouter<NextRequest, RequestContext>();
 
 
 router
-    .post(async (req, ctx) => {
+    .post(async (req) => {
         try {
             const json = await req.json()
             const user: NewUserData = json.user
             const hashedPassword = await encryptPassword(user.password)
-            const refererId = req.cookies.get("refererId")?.value || false
+            let refererId = user.refererId || req.cookies.get("refererId")?.value || false
+            console.log("refererId: ", refererId)
             if (!user.agreeToTerms || !user.confirmAge) {
                 return NextResponse.json({ success: false, publicError: "You must agree to the terms of service and confirm your age to register." })
+            }
+            let parent: null | User = null
+            if (refererId) {
+                parent = await prisma.user.findFirst({
+                    where: {
+                        id: parseInt(`${refererId}`)
+                    }
+                })
             }
             const dashboard = await prisma.dashboard.create({
                 data: {}
             })
+            let newLineage;
+            if (!parent) {
+                newLineage = await prisma.lineage.create({
+                    data: {
+                        familyTree: {
+                            connectOrCreate: {
+                                where: {
+                                    id: 1
+                                },
+                                create: {}
+                            }
+                        }
+                    }
+                })
+            }
             const newUser = await prisma.user.create({
                 data: {
                     username: user.username,
                     email: user.email,
                     password: hashedPassword,
+                    ...(parent && {
+                        parent: {
+                            connect: {
+                                id: parent.id
+                            }
+                        }
+                    }),
                     dashboard: {
                         connect: {
                             id: dashboard.id
                         }
+                    },
+                    lineage: {
+                        connect: {
+                            id: parent?.lineageId || newLineage?.id || 1
+                        }
                     }
-                },
-                include: {
-                    dashboard: true
                 }
             })
+
+            let updatedParent;
             if (refererId) {
                 const parent = await prisma.user.findFirst({
                     where: {
-                        id: parseInt(refererId)
+                        id: parseInt(`${refererId}`)
+                    },
+                    include: {
+                        children: true
                     }
                 })
                 if (parent) {
-                    const updatedParent = await prisma.user.update({
+                    updatedParent = await prisma.user.update({
                         where: {
                             id: parent.id
                         },
                         data: {
-                            parentId: newUser.id
+                            children: {
+                                connect: [...parent.children, newUser].map((c) => ({
+                                    id: c.id
+                                }))
+                            }
                         }
                     })
-                    console.log("updatedParent: ", updatedParent)
                 }
             }
-            let res = NextResponse.json({ newUser: newUser, success: true });
+            let res = NextResponse.json({ newUser: newUser, updatedParent: updatedParent, success: true });
             res = await setToken(req, res, newUser.username)
             return res
         } catch (err) {

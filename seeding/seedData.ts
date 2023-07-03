@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client";
 const testPassword = "Password123!"
 
 const nums = [
+    "One",
     "Two",
     "Three",
     "Four",
@@ -12,20 +13,79 @@ const nums = [
     "Seven",
     "Eight",
     "Nine",
-    "Ten"
+    "Ten",
+    "Eleven",
+    "Twelve",
+    "Thirteen",
+    "Fourteen",
+    "Fifteen",
+    "Sixteen",
+    "Seventeen",
+    "Eightteen",
+    "Nineteen",
+    "Twenty",
+    "TwentyOne",
+    "TwentyTwo",
+    "TwentyThree",
+    "TwentyFour",
+    "TwentyFive",
+    "TwentySix",
+    "TwentySeven",
+    "TwentyEight",
+    "TwentyNine",
+    "Thirty",
+    "ThirtyOne",
+    "ThirtyTwo",
+    "ThirtyThree",
+    "ThirtyFour",
+    "ThirtyFive",
+    "ThirtySix",
+    "ThirtySeven",
+    "ThirtyEight",
+    "ThirtyNine",
+    "Fourty",
+    "FourtyOne",
+    "FourtyTwo",
+    "FourtyThree",
+    "FourtyFour",
+    "FourtyFive",
+    "FourtySix",
+    "FourtySeven",
+    "FourtyEight",
+    "FourtyNine",
+    "Fifty",
+    "FiftyOne",
+    "FiftyTwo",
+    "FiftyThree",
+    "FiftyFour",
+    "FiftyFive",
+    "FiftySix",
+    "FiftySeven",
+    "FiftyEight",
+    "FiftyNine",
+    "Sixty",
+    "SixtyOne",
+    "SixtyTwo",
+    "SixtyThree",
+    "SixtyFour",
+    "SixtyFive",
+    "SixtySix",
+    "SixtySeven",
+    "SixtyEight",
+    "SixtyNine",
+    "Admin",
+    "Employee"
 ]
 
 
-export const users: Partial<Prisma.UserCreateManyInput>[] = nums.map((n) => {
-    const u: Partial<Prisma.UserCreateManyInput> = {
+export const users: Omit<Prisma.UserCreateManyInput, "dashboardId" | "lineageId">[] = nums.map((n, i): Omit<Prisma.UserCreateManyInput, "dashboardId" | "lineageId"> => {
+    return {
         username: `user${n}`,
-        password: testPassword,
         email: `user${n}@gmail.com`,
-        // age: Math.floor(Math.random() * (100 - 18)) + 18,
-        // confirmAge: true,
-        // agreeToTerms: true
+        password: testPassword,
+        ...(n === "Admin" && { role: "ADMIN" }),
+        ...(n === "Employee" ? { role: "EMPLOYEE" } : { role: "REP" }),
     }
-    return u
 })
 
 
@@ -62,10 +122,10 @@ const fakeLocation = (): Prisma.LocationCreateWithoutJobInput => {
     return locations[Math.floor(Math.random() * locations.length)]
 }
 
-export const jobs: CreateJobType[] = []
+const _jobs: CreateJobType[] = []
 
 for (var i = 0; i < 50; i++) {
-    jobs.push(
+    _jobs.push(
         {
             job: {
                 dateSubmitted: getPseudoDate(),
@@ -82,3 +142,5 @@ for (var i = 0; i < 50; i++) {
             location: fakeLocation()
         })
 }
+
+export const jobs = _jobs

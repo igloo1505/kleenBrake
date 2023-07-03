@@ -10,8 +10,9 @@ import axios from 'axios'
 import store from '#/state/store'
 import { showToast } from '#/state/slices/ui'
 import { useRouter } from 'next/navigation'
+import QuantityInput from './quantityInput'
 
-const maxStep = 4
+const maxStep = 5
 
 const RequestServiceForm = () => {
     const router = useRouter()
@@ -80,10 +81,11 @@ const RequestServiceForm = () => {
         <div className={'min-w-fit bg-[--surface-card] border border-[--surface-border] rounded-xl w-[min(85vw,768px)]'}>
             <div className={'w-full px-6 py-4 text-center text-3xl bg-primary text-[--primary-color-text] rounded-tl-xl rounded-tr-xl'}>Request KleenBrake Service</div>
             <div className={'w-full h-full relative overflow-hidden'}>
-                <RequestFormOne formData={formData} setFormData={setFormData} position={getPosition(1)} />
-                <RequestServiceFormTwo formData={formData} window="pickup" setFormData={setFormData} position={getPosition(2)} />
-                <RequestServiceFormTwo formData={formData} window="return" setFormData={setFormData} position={getPosition(3)} />
-                <RequestServiceFormMessage formData={formData} setFormData={setFormData} position={getPosition(4)} />
+                <QuantityInput formData={formData} setFormData={setFormData} position={getPosition(1)} />
+                <RequestFormOne formData={formData} setFormData={setFormData} position={getPosition(2)} />
+                <RequestServiceFormTwo formData={formData} window="pickup" setFormData={setFormData} position={getPosition(3)} />
+                <RequestServiceFormTwo formData={formData} window="return" setFormData={setFormData} position={getPosition(4)} />
+                <RequestServiceFormMessage formData={formData} setFormData={setFormData} position={getPosition(5)} />
             </div>
             <div className={'w-full flex flex-row justify-end items-center px-6 pb-6 gap-4'}>
                 {formStep > 1 && (

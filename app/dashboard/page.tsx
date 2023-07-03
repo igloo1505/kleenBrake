@@ -5,9 +5,10 @@ import React from 'react'
 import './styles.scss'
 import RecentSales from '@/dashboard/RecentSales';
 import TopSellers from '@/dashboard/TopSellers';
-import { validateOrRedirect } from '#/utils/serverUtils';
+import { getChildrenData, validateOrRedirect } from '#/utils/serverUtils';
 import { redirect } from 'next/navigation';
 import { parseChartData } from '#/types/chartData';
+import { UserIncludeAll, UserWithAll } from '#/state/types/AuthTypes';
 
 
 interface DashboardProps {
@@ -17,16 +18,20 @@ interface DashboardProps {
 }
 
 
+
 const Dashboard = async ({ }: DashboardProps) => {
-    const valid = await validateOrRedirect()
+    const valid = await validateOrRedirect(undefined, UserIncludeAll)
     if (!valid.user) {
         return redirect(valid.redirectPath || "/")
     }
-    const data = valid.user
-    const parsedData = parseChartData(data)
+    const user = valid.user as UserWithAll
+    const data = await getChildrenData(user)
+    /* console.log("data!!!", data) */
+    if (!data) return redirect(valid.redirectPath || "/")
+    const parsedData = parseChartData(user, data)
     return (
         <div className={'w-full'}>
-            <DashboardGraphGrid data={data} />
+            <DashboardGraphGrid data={parsedData} />
             <div className={'w-full px-6 mt-6 grid grid-cols-1 lg:grid-cols-[1fr_200px] gap-4'}>
                 <SalesHistory salesHistory={parsedData.salesHistory} />
                 <SalesByDepth data={data} />

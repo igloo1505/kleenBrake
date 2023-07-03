@@ -36,7 +36,7 @@ const JobDetailsModal = async ({ params: {
         return redirect("/portal")
     }
     return (
-        <MediaModalWrapper allowLarge={true}>
+        <MediaModalWrapper >
             <JobDetails job={job} />
         </MediaModalWrapper>
     )

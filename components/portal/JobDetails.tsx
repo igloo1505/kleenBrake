@@ -4,7 +4,7 @@ import { formatDate, formatGoogleMapsQuery } from '#/utils/formatting'
 import Button from '@/io/Button'
 import TextItemDisplay from '@/ui/TextItemDisplay'
 import React from 'react'
-
+import { BiDirections } from 'react-icons/bi'
 
 
 interface JobDetailsProps {
@@ -13,12 +13,11 @@ interface JobDetailsProps {
 
 const CardTitle = ({ children }: { children: string }) => {
     return (
-        <div className={'text-xl font-semibold'}>{children}</div>
+        <div className={'text-xl font-semibold w-fit inline-block'}>{children}</div>
     )
 }
 
 const JobDetails = ({ job }: JobDetailsProps) => {
-    console.log("job: ", job)
     return (
         <div className={'w-fit bg-[--surface-card] border-[--surface-border] border rounded-xl px-6 py-6 flex flex-col gap-4'}>
             <div className={'grid grid-cols-1 md:grid-cols-2 gap-4'}>
@@ -63,8 +62,12 @@ const JobDetails = ({ job }: JobDetailsProps) => {
                     </div>
                 </div>
             </div>
-            <CardTitle>Location</CardTitle>
-            <a href={formatGoogleMapsQuery(job.location)} target='_blank' className={'w-fit gap-4 flex flex-row justify-start items-center cursor-pointer'}>
+            <a href={formatGoogleMapsQuery(job.location)} target='_blank' className={'flex flex-row justify-center items-center gap-2  w-fit'}>
+                <CardTitle>Location
+                </CardTitle>
+                <BiDirections />
+            </a>
+            <div className={'w-fit gap-4 flex flex-row justify-start items-center'}>
                 <TextItemDisplay
                     value={job.location.street}
                     label='Street'
@@ -105,7 +108,7 @@ const JobDetails = ({ job }: JobDetailsProps) => {
                         }
                     }}
                 />
-            </a>
+            </div>
             <div className={'w-full flex flex-row justify-end items-center'}>
                 {!job.datePickedUp &&
                     <Button label="Mark as Picked Up" />
