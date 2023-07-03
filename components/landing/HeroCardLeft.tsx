@@ -28,16 +28,16 @@ const HeroCardLeft = connector(({ appData }: HeroCardLeftProps) => {
                 {appData.landing.heroCardBody}
             </div>}
             <div className={'w-full flex flex-row justify-end'}>
-                <div className={'w-full flex flex-col justify-center gap-3 items-center mt-6 lg:mt-4'}>
-                    <div className={'w-full sm:w-fit grid grid-cols-1 grid-rows-2 sm:grid-rows-1 sm:grid-cols-2 gap-4'}>
-                        <Link href="/signup" className={'w-full h-full'}>
+                <div className={'w-full mt-6 lg:mt-4 gap-4 grid grid-cols-1'}>
+                    <div className={'gap-4 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2'}>
+                        <Link href="/signup">
                             <Button
                                 label="Create an Account"
                                 size="large"
                                 className={'w-full h-full whitespace-break-spaces md:whitespace-nowrap'}
                             />
                         </Link>
-                        <Link href="/login" className={'w-full h-full'}>
+                        <Link href="/login">
                             <Button
                                 label="Login"
                                 size="large"
@@ -45,15 +45,13 @@ const HeroCardLeft = connector(({ appData }: HeroCardLeftProps) => {
                             />
                         </Link>
                     </div>
-                    <div className={'w-full h-fit'}>
-                        <Link href="/requestService">
-                            <Button
-                                label="Request Service"
-                                size="large"
-                                className={'w-full h-full'}
-                            />
-                        </Link>
-                    </div>
+                    <Link href="/requestService">
+                        <Button
+                            label="Request Service"
+                            size="large"
+                            className={'w-full h-full'}
+                        />
+                    </Link>
                 </div>
             </div>
         </div>
