@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --backdrop-color: #212121
+}
 
 .testborder {
     border: 1px solid red;
@@ -71,3 +74,4 @@ body {
 .autocomplete-grid input {
     width: 100%;
 }
+

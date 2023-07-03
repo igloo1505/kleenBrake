@@ -57,6 +57,12 @@ const slice = createSlice({
                 [action.payload]: !state.modals[action.payload]
             }
         },
+        openInitialModals(state) {
+            state.modals = {
+                ...state.modals,
+                callToAction: true
+            }
+        },
         closeAllModals(state) {
             let newModals: Partial<RootState['UI']['modals']> = {}
             Object.keys(state.modals).forEach((k) => {
@@ -80,5 +86,5 @@ const slice = createSlice({
     }
 })
 
-export const { toggleDarkMode, setJobModal, setActiveTheme, setScreenMessage, setLoading, setUIAppData, showToast, toggleDrawer, toggleModal, closeAllModals, setActiveDashboardComponent, publicError } = slice.actions
+export const { toggleDarkMode, openInitialModals, setJobModal, setActiveTheme, setScreenMessage, setLoading, setUIAppData, showToast, toggleDrawer, toggleModal, closeAllModals, setActiveDashboardComponent, publicError } = slice.actions
 export default slice.reducer

@@ -1,0 +1,12 @@
+.background-hover-opacity{
+    opacity: 0;
+    background-color: #212121;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.background-hover-opacity-target:hover {
+    .background-hover-opacity{
+        opacity: 0.05;
+    }
+}
+

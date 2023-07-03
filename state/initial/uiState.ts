@@ -16,6 +16,7 @@ export type initialUiStateType = {
     modals: {
         termsOfService: boolean
         privacy: boolean
+        callToAction: boolean | null
     }
     dashboard: {
         activeComponent: DashboardComponent
@@ -49,7 +50,8 @@ const initialUiState: initialUiStateType = {
     drawerOpen: false,
     modals: {
         termsOfService: false,
-        privacy: false
+        privacy: false,
+        callToAction: null
     },
     dashboard: {
         activeComponent: "salesHistory"
