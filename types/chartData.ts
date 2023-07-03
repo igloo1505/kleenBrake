@@ -1,5 +1,6 @@
 import { dayOfWeekInterface, getPreviousWeek } from "#/db/dayjs"
 import { DashboardWithAll, UserWithAll, childrenDataType } from "#/state/types/AuthTypes"
+import { getChildrenData } from "#/utils/serverUtils"
 import { Transaction, User } from "@prisma/client"
 
 export type DayOfWeek = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday"
@@ -95,33 +96,31 @@ type UserWithChildIds = (User & { children: { id: number }[] })
 type UserWithChildrenAndTransactions = (User & {
     children: (User & {
         dashboard: DashboardWithAll
-    })
+    })[]
 })
 
-const groupByDepth = (data: UserWithAll, children: childrenDataType): UserWithChildrenAndTransactions => {
-    const getChildren = (user: UserWithChildIds, child: UserWithChildIds[]) => {
-        const _child = child.filter((c) => {
-            return user.children.map((u) => u.id).indexOf(c.id) > -1
+const groupByDepth = (data: UserWithAll, children: childrenDataType) => {
+    const _byDepth: childrenDataType[] = []
+    const getChildren = (users: UserWithChildrenAndTransactions[] | UserWithAll[] | childrenDataType, child: childrenDataType): childrenDataType[] => {
+        let _depthLevel: childrenDataType = []
+        users.forEach((user) => {
+            const _children = child.filter((c) => {
+                return user.children.map((u) => u.id).indexOf(c.id) > -1
+            })
+            _depthLevel = [..._depthLevel, ..._children]
         })
-        const _user: UserWithChildrenAndTransactions | any = {
-            ...user,
-            // TODO: You can definitely make this faster by slicing the array... but that's too much work for now.
-            children: _child.map((c, i) => getChildren(c, child))
+        if (_depthLevel.length !== 0) {
+            _byDepth.push(_depthLevel)
+            return getChildren(_byDepth[_byDepth.length - 1], child)
         }
-        // console.log("_child: ", _child)
-        return _user
-
+        return _byDepth
     }
-    const d = {
-        ...data,
-        children: data.children ? data.children.map((c) => ({ id: c.id })) : []
-    } as UserWithChildIds
-    return getChildren(d, children) as UserWithChildrenAndTransactions
+    return getChildren([data], children)
 }
 
 
 const getSalesByDepth = (user: UserWithAll, children: childrenDataType): ParsedChartData['salesByDepth'] => {
-    console.log("user.id: ", user.id, user.username)
+    // console.log("children: ", children)
     const reversed = children.reverse()
     const depthData: SalesByDepth[] = []
     const byDepth = groupByDepth(user, reversed)
@@ -132,7 +131,7 @@ const getSalesByDepth = (user: UserWithAll, children: childrenDataType): ParsedC
 
 
     // })
-    console.log("byDepth: ", byDepth)
+    // console.log("byDepth: ", byDepth)
     // console.log("byDepth: ", byDepth)
     // const _children: SalesByDepth[] = []
     // reversed.forEach((c, i, a) => {

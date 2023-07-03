@@ -1,13 +1,12 @@
 import { Dashboard, User } from '@prisma/client';
 import React from 'react'
 import SalesByDepthChart from './charts/byDepth';
+import { ParsedChartData } from '#/types/chartData';
 
 
 
 interface SalesByDepthProps {
-    data: (User & {
-        dashboard: Dashboard | null;
-    }) | null
+    data: ParsedChartData['salesByDepth']
 }
 
 const SalesByDepth = (props: SalesByDepthProps) => {

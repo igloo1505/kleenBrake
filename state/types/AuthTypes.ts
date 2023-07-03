@@ -1,3 +1,4 @@
+import { getChildrenData } from "#/utils/serverUtils"
 import type { Dashboard, Prisma, ROLE, User, Job, Lineage, Transaction } from "@prisma/client"
 
 export type roleTypes = ROLE
@@ -81,7 +82,7 @@ export type DashboardWithAll = (Dashboard & { transactions: Transaction[] })
 
 export type UserWithAll = (User & {
     parent: User | null,
-    children: User[] | null,
+    children: UserWithAll[]
     dashboard: DashboardWithAll,
     jobsPickedUp: Job[] | null,
     jobsDroppedOff: Job[] | null,
@@ -94,4 +95,4 @@ export interface UserWithDescendantTree extends User {
     descendants: DescendantTree
 }
 
-export type childrenDataType = (User & { dashboard: Dashboard & { transactions: Transaction[]; }; children: { id: number; }[]; })[]
+export type childrenDataType = Awaited<ReturnType<typeof getChildrenData>>

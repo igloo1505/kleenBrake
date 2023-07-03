@@ -26,7 +26,6 @@ const Dashboard = async ({ }: DashboardProps) => {
     }
     const user = valid.user as UserWithAll
     const data = await getChildrenData(user)
-    /* console.log("data!!!", data) */
     if (!data) return redirect(valid.redirectPath || "/")
     const parsedData = parseChartData(user, data)
     return (
@@ -34,7 +33,7 @@ const Dashboard = async ({ }: DashboardProps) => {
             <DashboardGraphGrid data={parsedData} />
             <div className={'w-full px-6 mt-6 grid grid-cols-1 lg:grid-cols-[1fr_200px] gap-4'}>
                 <SalesHistory salesHistory={parsedData.salesHistory} />
-                <SalesByDepth data={data} />
+                <SalesByDepth data={parsedData.salesByDepth} />
             </div>
             <div className={'w-full px-6 mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4'}>
                 <TopSellers topSellers={parsedData.topSellers} />

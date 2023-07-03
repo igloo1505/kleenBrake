@@ -314,9 +314,13 @@ export const getChildrenData = async (user: User) => {
                 }
             },
             children: {
-                select: {
-                    id: true
-                }
+                include: {
+                    dashboard: {
+                        select: {
+                            transactions: true
+                        }
+                    }
+                },
             }
         }
     })
