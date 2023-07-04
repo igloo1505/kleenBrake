@@ -26,7 +26,11 @@ const DashboardDetailBadge = ({ label, val, color, numerical }: TSDetailProps) =
             }}
         >
             <div className={clsx('w-full text-center text-[--text-color]')}>{label}</div>
-            {numerical === 0 ? <NoValue /> : <div className={clsx('p-4 w-full h-full flex justify-center items-center', color === "success" && "p-button p-button-success")}>{val}</div>}
+            {numerical === 0 ? <NoValue /> : <div className={clsx('p-4 w-full h-full flex justify-center items-center', color === "success" && "p-button p-button-success")}
+                style={{
+                    cursor: "default !important"
+                }}
+            >{val}</div>}
         </div>
     )
 

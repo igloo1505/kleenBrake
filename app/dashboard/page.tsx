@@ -30,8 +30,8 @@ const Dashboard = async ({ }: DashboardProps) => {
     return (
         <div className={'w-full'}>
             <DashboardGraphGrid data={parsedData} />
-            <div className={'w-full px-6 mt-6 grid grid-cols-1 lg:grid-cols-[1fr_200px] gap-4'}>
-                <SalesHistory salesHistory={parsedData.salesHistory} />
+            <div className={'w-full max-w-full px-6 mt-6 grid grid-cols-1 grid-rows-2 lg:grid-cols-[1fr_300px] lg:grid-rows-1 gap-4'}>
+                <SalesHistory salesHistory={parsedData.salesHistory} previousWeek={parsedData.previousWeek.salesByDay} />
                 <SalesByDepth data={parsedData.salesByDepth} />
             </div>
             <div className={'w-full px-6 mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4'}>

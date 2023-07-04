@@ -1,80 +1,130 @@
 "use client"
 import { Chart } from 'primereact/chart';
-import React from 'react'
+import React, { useState } from 'react'
 import { useDashboardStyles } from '#/state/hooks/UIHooks';
+import { ParsedChartData, getChartColor } from '#/types/chartData';
+import store from '#/state/store';
 
 
-const SalesHistoryChart = () => {
-    const styles = useDashboardStyles()
-    if (!styles) return null
+interface dataset {
+    label: string
+    data: number[]
+    tension: number
+    fill: boolean
+    borderColor: string
+    backgroundColor?: string
+}
+
+interface Props {
+    data: ParsedChartData['salesHistory']
+    previousWeek: ParsedChartData['previousWeek']['salesByDay']
+}
+
+const SalesHistoryChart = ({ data, previousWeek }: Props) => {
+    const labels = data.map((d) => d.day).reverse()
+    const prevLabels = data.map((d) => d.day).reverse()
+    console.log("labels, prevLabels: ", labels, prevLabels)
+    const [darkMode, setDarkMode] = useState<boolean>(false)
+    const watchDarkMode = () => {
+        const _darkMode = store.getState().UI.darkMode
+        console.log("_darkMode: ", _darkMode)
+        _darkMode !== darkMode && setDarkMode(_darkMode)
+    }
+    store.subscribe(watchDarkMode)
+    const thisWeekProfit: dataset = {
+        label: "Profit",
+        fill: false,
+        tension: 0.4,
+        borderColor: getChartColor(0, 500, darkMode),
+        data: data.map((d) => d.totalProfit / 100).reverse()
+    }
+    const thisWeekQuantity: dataset = {
+        label: "Sales",
+        fill: false,
+        tension: 0.4,
+        borderColor: getChartColor(1, 500, darkMode),
+        data: data.map((d) => d.totalQuantity).reverse()
+    }
+
+
+    const lastWeekProfit: dataset = {
+        label: "Last Week's Profit",
+        tension: 0.4,
+        fill: true,
+        borderColor: getChartColor(2, 500, darkMode),
+        backgroundColor: `${getChartColor(2, 300, darkMode)}22`,
+        data: previousWeek.map((d) => d.totalProfit / 100).reverse()
+    }
+    const lastWeekQuantity: dataset = {
+        label: "Last Week's Sales",
+        fill: true,
+        tension: 0.4,
+        borderColor: getChartColor(3, 500, darkMode),
+        backgroundColor: `${getChartColor(3, 300, darkMode)}22`,
+        data: previousWeek.map((d) => d.totalQuantity).reverse()
+    }
 
     const chartData = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        labels: labels,
         datasets: [
-            {
-                label: 'First Dataset',
-                data: [65, 59, 80, 81, 56, 55, 40],
-                fill: false,
-                tension: 0.4,
-                borderColor: styles.colors[0]
-            },
-            {
-                label: 'Second Dataset',
-                data: [28, 48, 40, 19, 86, 27, 90],
-                fill: false,
-                borderDash: [5, 5],
-                tension: 0.4,
-                borderColor: styles.colors[1]
-            },
-            {
-                label: 'Third Dataset',
-                data: [12, 51, 62, 33, 21, 62, 45],
-                fill: true,
-                borderColor: styles.colors[2],
-                tension: 0.4,
-                backgroundColor: 'rgba(255,167,38,0.2)'
-            }
+            thisWeekProfit,
+            thisWeekQuantity,
+            lastWeekProfit,
+            lastWeekQuantity
         ]
     }
 
 
     const options = {
+        responsive: true,
         maintainAspectRatio: false,
-        /* aspectRatio: 0.6, */
+        /* aspectRatio: 1.6, */
         plugins: {
             legend: {
                 labels: {
-                    color: styles.textColor
+                    color: getChartColor(-1, 500, darkMode)
                 }
             }
         },
         scales: {
+            /* responsive: true, */
             x: {
+                /* stacked: true, */
                 ticks: {
-                    color: styles.textColorSecondary
+                    color: getChartColor(-2, 500, darkMode)
                 },
                 grid: {
-                    color: styles.surfaceBorder
+                    color: getChartColor(-3, 500, darkMode)
                 }
             },
             y: {
+                /* stacked: true, */
                 ticks: {
-                    color: styles.textColorSecondary
+                    color: getChartColor(-2, 500, darkMode)
                 },
                 grid: {
-                    color: styles.surfaceBorder
+                    color: getChartColor(-3, 500, darkMode)
                 }
             }
         }
+
     };
 
     if (!chartData) {
         return null
     }
 
-    return (styles ?
-        <Chart type="line" data={chartData} options={options} className="w-full max-w-full h-full" style={{
-        }} /> : null
+    return (<Chart type="line" data={chartData} options={options}
+        className="max-w-full lg:w-[calc(100%-1rem)]" style={{
+            maxWidth: "100% !important",
+            width: "calc(100% - 1rem)",
+            height: "100%",
+            paddingBottom: "1rem",
+            paddingTop: "1rem",
+            /* marginLeft: "0.5rem", */
+            /* height: "auto !important" */
+        }} />
+
     )
 }
 

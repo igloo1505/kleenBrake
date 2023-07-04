@@ -14,9 +14,24 @@ const calculateProfit = (t: Transaction) => {
 export type DayOfWeek = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday"
 
 
-export const getChartColor = (n: number, alpha: number = 400) => {
+export const getChartColor = (n: number, alpha: number = 400, darkMode: boolean = true) => {
     const tw = resolveConfig(config)
     const colorList = tw.theme?.colors
+    if (n < 0) {
+        if (n === -1 || n === -2) {
+            return darkMode ? "#fff" : "#000"
+        }
+        if (n === -2) {
+            // NOTE: This will never be reached currently. If the above block looks good get rid of this.
+
+            /// @ts-ignore
+            return colorList[darkMode ? "primary" : "primaryLight"] || "#737373"
+        }
+        if (n === -3) {
+            /// @ts-ignore
+            return colorList["stone"]["600"] || "#212121"
+        }
+    }
     const colors = [
         "blue",
         "yellow",
@@ -87,27 +102,31 @@ export interface SalesByDepth {
     quantity: number
 }
 
+
+type salesWeek = [
+    recentSalesDay,
+    recentSalesDay,
+    recentSalesDay,
+    recentSalesDay,
+    recentSalesDay,
+    recentSalesDay,
+    recentSalesDay,
+] | recentSalesDay[]
+
 export interface ParsedChartData {
     previousWeek: {
         salesTotal: number
         salesQuantity: number
         profit: number
         descendants: number
+        salesByDay: salesWeek
     }
     totals: {
         revenue: number
         quantity: number
     }
     salesByDepth: SalesByDepth[],
-    salesHistory: [
-        recentSalesDay,
-        recentSalesDay,
-        recentSalesDay,
-        recentSalesDay,
-        recentSalesDay,
-        recentSalesDay,
-        recentSalesDay,
-    ]
+    salesHistory: salesWeek
     topSellers: {
         byQuantity: topSeller[]
         byValue: topSeller[]
@@ -262,53 +281,23 @@ export const getPreviousWeekDescendants = (users: childrenDataType, times: TimeI
     })
 }
 
-const getPreviousWeekData = (data: UserWithAll, children: childrenDataType): ParsedChartData['previousWeek'] => {
-    const week = getPreviousWeek(1)
-    const transactions = data.dashboard.transactions.filter((t) => {
-        const tDate = new Date(t.date).valueOf() / 1000
-        return tDate >= week[week.length - 1].start.unix && tDate <= week[0].end.unix
-    })
 
-    const previousWeekTransactions = () => transactions.length > 0 ? transactions.map((t) => t.price).reduce((a, b) => a + b) : 0
-
-    // BUG: Handle this profit thing here too...
-    // const salesTotal = getSalesTotal()
-
-    const lineFiltered = children.filter((c) => {
-        const cDate = new Date(c.createdAt).valueOf() / 1000
-        return cDate >= week[week.length - 1].start.unix && cDate <= week[0].end.unix
-    }) || []
-
-    return {
-        salesTotal: salesTotal,
-        salesQuantity: transactions.length,
-        profit: salesTotal,
-        descendants: lineFiltered.length || 0
-    }
-
-}
-
-const getSalesHistory = (data: UserWithAll): [
-    recentSalesDay,
-    recentSalesDay,
-    recentSalesDay,
-    recentSalesDay,
-    recentSalesDay,
-    recentSalesDay,
-    recentSalesDay,
-] => {
-    const week = getPreviousWeek()
-    const transactions = data.dashboard.transactions.filter((t) => new Date(t.date).valueOf() / 1000 >= week[week.length - 1].start.unix)
-    let sales = week.map((w) => getSalesDay(w, transactions)) as [
-        recentSalesDay,
-        recentSalesDay,
-        recentSalesDay,
-        recentSalesDay,
-        recentSalesDay,
-        recentSalesDay,
-        recentSalesDay,
-    ]
-    return sales
+const getSalesHistory = (data: ReturnType<typeof getRecentSales>, offset: number = 0): recentSalesDay[] => {
+    console.log("data: ", data)
+    const week = getPreviousWeek(offset)
+    console.log("week: ", week)
+    const grouped = week.map((w) => ({
+        day: w.label,
+        transactions: data.filter((d) => d.date.unix > w.start.unix && d.date.unix <= w.end.unix
+        )
+    })).map((g) => ({
+        ...g,
+        transactions: g.transactions.map((t) => t.transaction),
+        totalSales: g.transactions.length > 0 ? g.transactions.map((l) => l.amount).reduce((a, b) => a + b) : 0,
+        totalQuantity: g.transactions.length > 0 ? g.transactions.length : 0,
+        totalProfit: g.transactions.length > 0 ? g.transactions.map((l) => l.profit).reduce((a, b) => a + b) : 0
+    }))
+    return grouped
 }
 
 
@@ -328,7 +317,7 @@ export const parseChartData = (user: UserWithAll, data: childrenDataType): Parse
         recentSales: recentSales,
         salesByDepth: byDepth.salesByDepth,
         topSellers: topSellers,
-        salesHistory: getSalesHistory(user),
+        salesHistory: getSalesHistory(recentSales, 0),
         totalDescendants: data.length || 0,
         totals: {
             revenue: recentSales.map((s) => s.amount).reduce((a, b) => a + b) || 0,
@@ -338,6 +327,7 @@ export const parseChartData = (user: UserWithAll, data: childrenDataType): Parse
             salesTotal: previousWeekTransactions.length,
             salesQuantity: previousWeekAmounts.length > 0 ? previousWeekAmounts.reduce((a, b) => a + b) : 0,
             profit: previousWeekTransactions.length > 0 ? previousWeekTransactions.map((t) => calculateProfit(t.transaction)).reduce((a, b) => a + b) : 0,
+            salesByDay: getSalesHistory(recentSales, 1),
             descendants: previousWeekDescendants.length || 0
         }
     }
