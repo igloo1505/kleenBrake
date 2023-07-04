@@ -19,7 +19,7 @@ const SalesByDepth = (props: SalesByDepthProps) => {
             }}
         >
             <div className={'w-full max-w-full h-full flex justify-center items-center text-center'}>
-                <SalesByDepthChart />
+                <SalesByDepthChart data={props.data} />
             </div>
         </DashboardCardWithTitle>
     )

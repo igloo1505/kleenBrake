@@ -2,6 +2,9 @@ import dayjs, { dayOfWeekInterface, getPreviousWeek } from "#/db/dayjs"
 import { DashboardWithAll, UserWithAll, childrenDataType } from "#/state/types/AuthTypes"
 import { dateFormatNoTime, dateFormatWithTime } from "#/utils/formatting"
 import { Transaction, User } from "@prisma/client"
+import resolveConfig from 'tailwindcss/resolveConfig'
+import config from '../tailwind.config'
+
 
 const calculateProfit = (t: Transaction) => {
     // BUG: This still needs to be fixed in multiple places.
@@ -10,6 +13,30 @@ const calculateProfit = (t: Transaction) => {
 
 export type DayOfWeek = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday"
 
+
+export const getChartColor = (n: number, alpha: number = 400) => {
+    const tw = resolveConfig(config)
+    const colorList = tw.theme?.colors
+    const colors = [
+        "blue",
+        "yellow",
+        "indigo",
+        "lime",
+        "orange",
+        "sky",
+        "fuchsia",
+    ]
+    let c: string | false = false
+    if (n < colors.length) {
+        c = colors[n]
+    }
+    if (n > colors.length) {
+        c = colors[colors.length % n]
+    }
+    /// @ts-ignore
+    const colorVal: string = colorList && c ? colorList[c][`${alpha}`] : "transparent"
+    return colorVal || "transparent"
+}
 
 export interface recentSalesDay {
     day: DayOfWeek
