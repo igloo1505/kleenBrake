@@ -334,7 +334,6 @@ export const getChildrenData = async (user: User) => {
             }
         }
     })
-    console.log("lineage[0]: ", lineage[0].children[0])
     if (!lineage) return []
     return lineage
 }

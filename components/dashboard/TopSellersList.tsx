@@ -37,7 +37,6 @@ const TopSellersList = ({ data }: TopSellersListProps) => {
     const [slicedIdx, setSlicedIdx] = useState<[number, number]>([0, listLength])
     const handleSlice = (n: number) => {
         const newSlice = [slicedIdx[0] + n, slicedIdx[1] + n] as [number, number]
-        console.log("newSlice: ", newSlice)
         if (newSlice[1] < data[activeList].length - 1 && newSlice[0] >= 0) {
             setSlicedIdx(newSlice)
         }

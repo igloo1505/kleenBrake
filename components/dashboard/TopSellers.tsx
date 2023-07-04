@@ -10,7 +10,6 @@ interface TopSellersProps {
 }
 
 const TopSellers = ({ topSellers }: TopSellersProps) => {
-    console.log("topSellers: ", topSellers)
     return (
         <DashboardCardWithTitle
             style={{
