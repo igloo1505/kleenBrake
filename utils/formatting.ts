@@ -17,6 +17,11 @@ export const percentChange = (a: number, b: number) => {
     return (b - a) / a
 }
 
+export const formatCurrencyString = (n: number) => {
+    let _n = n / 100
+    return `$${_n.toFixed(2)}`
+}
+
 
 export const formatTagText = (tag: string) => {
     let s = ""

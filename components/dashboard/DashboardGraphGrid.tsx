@@ -1,6 +1,5 @@
 import React from 'react'
 import DashboardGraphCard from './DashboardGraphCard';
-import { Dashboard, User } from '@prisma/client';
 import { ParsedChartData } from '#/types/chartData';
 
 

@@ -55,7 +55,7 @@ const DashboardGraphCard = ({ type, currentData, previousData, label }: Dashboar
                 }}>
                     {type === "money" && <FaDollarSign className={'h-[1.875rem] w-fit max-w-[30px]'} />}
                     <div className={'text-3xl font-bold h-full flex justify-center items-center'}>
-                        {currentData}
+                        {type === "money" ? Number(currentData / 100).toFixed(2) : currentData}
                     </div>
                 </div>
                 <PercentChangeDisplay status={status} percentChange={pChange} />

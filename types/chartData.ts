@@ -178,8 +178,8 @@ const getTopSellers = (grouped: ReturnType<typeof groupByDepth>): ParsedChartDat
         }))
     })
     return {
-        byValue: tmp.sort((a, b) => a.salesTotal - b.salesTotal),
-        byQuantity: tmp.sort((a, b) => a.salesQuantity - b.salesQuantity)
+        byValue: tmp.sort((a, b) => b.salesTotal - a.salesTotal),
+        byQuantity: tmp.sort((a, b) => b.salesQuantity - a.salesQuantity)
     } as ParsedChartData['topSellers']
 
 }

@@ -14,7 +14,7 @@ const IconButton = ({ icon, onClick, active }: { icon: ButtonKey, onClick: (k: B
 
     return (
         <div onClick={() => onClick(icon)}
-            className={'flex justify-center items-center w-full h-full rounded-lg transition-all duration-150'}
+            className={'flex justify-center items-center w-full h-full rounded-lg transition-all duration-150 min-h-[32px]'}
             style={{
                 cursor: active ? "pointer" : "default",
                 border: "2px solid var(--primary-color)",
@@ -52,7 +52,7 @@ const TopSellersList = ({ data }: TopSellersListProps) => {
             </div>
             <div className={'w-full h-full grid gap-2'}
                 style={{
-                    gridTemplateRows: `repeat(1fr, ${slicedIdx[1] - slicedIdx[0]})`
+                    gridTemplateRows: `repeat(${listLength}, 1fr)`
                 }}
             >
                 {data[activeList].slice(slicedIdx[0], slicedIdx[1]).map((s, i) => {
