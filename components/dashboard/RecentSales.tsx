@@ -2,6 +2,7 @@ import { ParsedChartData } from '#/types/chartData';
 import React from 'react'
 import DashboardCardWithTitle from './DashboardCardWithTitle';
 import RecentSaleListItem from './RecentSaleListItem';
+import DashboardGridList from './DashboardGridList';
 
 
 
@@ -17,13 +18,13 @@ const SalesHistory = ({ recentSales }: RecentSalesProps) => {
             }}
             title="Recent Sales"
         >
-            <div className={'w-full h-full flex justify-center items-center'}>
+            <DashboardGridList listLength={3}>
                 {recentSales.length > 0 ? recentSales.map((s, i) => {
                     return (
                         <RecentSaleListItem item={s} key={`recent-sale-${i}`} />
                     )
                 }) : <div className={'text-[--text-color]'}>No sales yet</div>}
-            </div>
+            </DashboardGridList>
         </DashboardCardWithTitle>
     )
 }

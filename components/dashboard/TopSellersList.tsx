@@ -3,6 +3,7 @@ import { ParsedChartData, topSeller } from '#/types/chartData'
 import React, { useState } from 'react'
 import TopSellerCard from './charts/TopSellerCard'
 import { FaChartLine, FaDollarSign, FaMinusCircle, FaPlusCircle } from 'react-icons/fa'
+import DashboardGridList from './DashboardGridList'
 
 type ButtonKey = keyof ParsedChartData['topSellers'] | "increment" | "decremement"
 
@@ -49,15 +50,11 @@ const TopSellersList = ({ data }: TopSellersListProps) => {
                 <IconButton icon="byQuantity" onClick={setActiveList as (k: ButtonKey) => void} active={activeList !== "byQuantity"} />
                 <IconButton icon="increment" onClick={(k: ButtonKey) => handleSlice(1)} active={slicedIdx[1] < data[activeList].length - 1} />
             </div>
-            <div className={'w-full h-full grid gap-2'}
-                style={{
-                    gridTemplateRows: `repeat(${listLength}, 1fr)`
-                }}
-            >
+            <DashboardGridList listLength={3}>
                 {data[activeList].slice(slicedIdx[0], slicedIdx[1]).map((s, i) => {
                     return <TopSellerCard seller={s} key={`top-seller-card-${i}`} />
                 })}
-            </div>
+            </DashboardGridList>
         </div>
     )
 }
