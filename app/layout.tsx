@@ -19,6 +19,7 @@ const Layout = async ({ children, media }: {
     media: any,
 }) => {
     const isAuthed = await checkAuthenticated()
+
     return (
         <html lang="en">
             <ProductionThemeSourcing />

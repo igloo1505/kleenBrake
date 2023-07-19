@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-    --backdrop-color: #212121
+           --backdrop-color: #212121
 }
 
 .testborder {
@@ -11,7 +11,7 @@
 }
 
 .btn-override-subtitle {
-    cursor: default !important;
+            cursor: default !important;
     /* font-size: 1.4rem !important; */
 }
 

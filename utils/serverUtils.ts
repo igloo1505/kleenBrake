@@ -7,6 +7,7 @@ import { cookies } from 'next/headers'
 import { Dashboard, Lineage, Prisma, ROLE, Transaction, User } from '@prisma/client'
 import { CreateStripeCustomerType, childrenDataType } from '#/state/types/AuthTypes'
 import { CreateJobType, maxJobsPerPage } from '#/types/jobTypes'
+import { NextRequest } from 'next/server'
 
 const secret = new TextEncoder().encode(process.env.QR_SECRET!)
 
@@ -336,4 +337,17 @@ export const getChildrenData = async (user: User) => {
     })
     if (!lineage) return []
     return lineage
+}
+
+export const getCorsHeaders = (req: NextRequest, _status: number = 200) => {
+    const origin = req.headers.get("origin") || "*"
+    return {
+        status: _status,
+        headers: {
+            "Access-Control-Allow-Origin": origin,
+            "Content-Type": "application/json",
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        }
+    }
 }

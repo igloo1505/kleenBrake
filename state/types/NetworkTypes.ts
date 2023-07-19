@@ -5,3 +5,4 @@ export const defaultAxiosConfig: AxiosRequestConfig = {
         "Content-Type": "application/json"
     }
 }
+

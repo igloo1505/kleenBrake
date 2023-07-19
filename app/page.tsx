@@ -1,5 +1,5 @@
-import { checkAuthenticated } from 'utils/authWithCookiesHook';
-import AuthenticatedHome from 'components/landing/authenticatedHome/AuthenticatedHome';
+/* import { checkAuthenticated } from 'utils/authWithCookiesHook'; */
+/* import AuthenticatedHome from 'components/landing/authenticatedHome/AuthenticatedHome'; */
 import WrappedUnauthenticatedHome from 'components/wrappedComponents/developmentOnly/wrappedUnauthenticatedHome';
 import 'styles/landing.scss'
 

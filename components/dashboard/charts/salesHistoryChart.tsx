@@ -87,9 +87,7 @@ const SalesHistoryChart = ({ data, previousWeek }: Props) => {
             }
         },
         scales: {
-            /* responsive: true, */
             x: {
-                /* stacked: true, */
                 ticks: {
                     color: getChartColor(-2, 500, darkMode)
                 },
@@ -98,7 +96,6 @@ const SalesHistoryChart = ({ data, previousWeek }: Props) => {
                 }
             },
             y: {
-                /* stacked: true, */
                 ticks: {
                     color: getChartColor(-2, 500, darkMode)
                 },
@@ -121,8 +118,6 @@ const SalesHistoryChart = ({ data, previousWeek }: Props) => {
             height: "100%",
             paddingBottom: "1rem",
             paddingTop: "1rem",
-            /* marginLeft: "0.5rem", */
-            /* height: "auto !important" */
         }} />
 
     )
